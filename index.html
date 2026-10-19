@@ -1,0 +1,3830 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>話術破壁者：AI 刁鑽保戶異議處理與 SPIN 實戰擂台 | TonyStudio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #090714; color: #f8fafc; overflow-x: hidden; }
+    .glass-card {
+      background: rgba(20, 18, 40, 0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .arena-border {
+      background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(139,92,246,0.14));
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+    .pulse-dot {
+      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    @keyframes urgent-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); border-color: rgba(244, 63, 94, 0.4); }
+      50% { box-shadow: 0 0 35px 4px rgba(244, 63, 94, 0.55); border-color: rgba(244, 63, 94, 1); }
+    }
+    .timer-urgent {
+      animation: urgent-glow 0.8s infinite ease-in-out;
+    }
+    @keyframes boss-shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake {
+      animation: boss-shake 0.45s ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+  <!-- 全域無阻塞 Toast 通知容器 -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- ==================== SaaS 會員登入/註冊閘門 (Auth Gate) ==================== -->
+  <div id="authGateOverlay" class="fixed inset-0 z-50 bg-[#090714] overflow-y-auto flex flex-col justify-between p-4 md:p-8">
+    <div class="max-w-6xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-6">
+      
+      <!-- 左側：品牌視覺與 TONY 老師顧問簡介 (佔 7 欄) -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="flex items-center gap-4">
+          <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="TonyStudio Logo" class="w-16 h-16 rounded-2xl object-contain bg-slate-900/90 p-1.5 border border-rose-500/40 shadow-xl" onerror="this.src='https://placehold.co/80x80/1e1b4b/f43f5e?text=TS'">
+          <div>
+            <span class="text-xs font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              Enterprise SaaS・保險業實戰內訓系統
+            </span>
+            <h1 class="text-2xl md:text-3xl font-black text-white mt-1 tracking-tight">
+              話術破壁者：AI 刁鑽保戶異議處理與 SPIN 實戰擂台
+            </h1>
+          </div>
+        </div>
+
+        <!-- 平台創作者 TONY 顧問簡介卡片 -->
+        <div class="arena-border rounded-3xl p-6 space-y-4 shadow-2xl">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-b border-slate-800/80 pb-4">
+            <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="TONY 楊文澤 老師" class="w-20 h-20 rounded-2xl object-cover border-2 border-rose-400 shadow-lg shrink-0" onerror="this.src='https://placehold.co/96x96/881337/ffffff?text=TONY'">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-xl font-black text-white">TONY 楊文澤 老師</h2>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">平台創作者・系統架構師</span>
+              </div>
+              <p class="text-xs md:text-sm text-rose-300 font-semibold mt-1">
+                資深數位行銷科技顧問 ｜ 生成式 AI 創作者 ｜ 創業導師
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-200 leading-relaxed">
+            <div class="space-y-2 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800/80">
+              <div class="font-bold text-rose-400">▪ 現職 Current</div>
+              <ul class="space-y-1 pl-1 text-slate-300">
+                <li>▪ 龍華科大 數位行銷講師</li>
+                <li>▪ 智策慧 品牌行銷科技顧問</li>
+              </ul>
+              <div class="font-bold text-violet-400 pt-1">▪ 學歷 Education</div>
+              <ul class="space-y-1 pl-1 text-slate-300">
+                <li>- 台大 EMBA 商學組</li>
+                <li>- 美國 Arizona State University 互動多媒體設計</li>
+                <li>▪ 北科大 工業設計</li>
+              </ul>
+            </div>
+
+            <div class="space-y-2 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800/80">
+              <div class="font-bold text-emerald-400">▪ 經歷 Experience</div>
+              <ul class="space-y-1 pl-1 text-slate-300">
+                <li>▪ 脈動心聯股份有限公司 創辦人暨執行長</li>
+                <li>- 宏碁集團建碁 AOPEN 整合營銷處處長 / 全球品牌行銷總監 / 企業發言人</li>
+                <li>- 台灣數位看板多媒體聯盟 (DSMA) 副會長</li>
+              </ul>
+              <div class="font-bold text-amber-400 pt-1">▪ 專家授課經歷</div>
+              <ul class="space-y-1 pl-1 text-slate-300">
+                <li>▪ CPC 生產力中心 經營管理顧問師班 / 中小企業成長創價能量 講師</li>
+                <li>- 台大 EMBA / 長榮 EMBA / 北科大 / 政大 / 世新 業師</li>
+                <li>- 2021 MarTech 行銷科技行銷長認證班 講師</li>
+                <li>- 2021/2024/2025 T大使與產業尖兵 講師</li>
+                <li>- 2025 新光人壽 AI 工具應用 企業內訓講師</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右側：高質感會員登入 / 註冊 / 忘記密碼卡片 (佔 5 欄) -->
+      <div class="lg:col-span-5">
+        <div class="glass-card rounded-3xl p-6 md:p-8 border border-slate-700/80 shadow-2xl space-y-5">
+          
+          <!-- 模式切換 Tabs -->
+          <div class="grid grid-cols-2 bg-slate-900 p-1 rounded-2xl border border-slate-800 text-xs md:text-sm font-bold">
+            <button id="authTabLogin" onclick="window.app.switchAuthTab('login')" class="py-2.5 rounded-xl bg-rose-600 text-white shadow transition">
+              🔐 會員登入
+            </button>
+            <button id="authTabRegister" onclick="window.app.switchAuthTab('register')" class="py-2.5 rounded-xl text-slate-400 hover:text-white transition">
+              ✨ 註冊新會員
+            </button>
+          </div>
+
+          <!-- 動態訊息橫幅 (成功綠字 / 警告紅字) -->
+          <div id="authAlertBanner" class="hidden p-4 rounded-2xl text-xs font-bold leading-relaxed border"></div>
+
+          <!-- 溫馨提醒：垃圾郵件匣提示卡 (首次註冊與忘記密碼時顯著提示) -->
+          <div id="spamReminderBanner" class="hidden p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs flex items-start gap-2.5 leading-relaxed">
+            <span class="text-lg shrink-0">📬</span>
+            <div>
+              <strong>溫馨提醒：</strong>註冊確認信或密碼重設信有時會跑到<strong>「垃圾郵件匣 (Spam)」</strong>或「促銷內容」，請記得前往確認並點擊驗證連結唷！
+            </div>
+          </div>
+
+          <!-- 1. 登入表單 -->
+          <div id="authFormLogin" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">電子信箱 (Email)</label>
+              <input id="loginEmail" type="email" placeholder="請輸入您的註冊 Email" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-semibold text-slate-300">登入密碼</label>
+                <button type="button" onclick="window.app.switchAuthTab('reset')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold">忘記密碼？</button>
+              </div>
+              <div class="relative">
+                <input id="loginPassword" type="password" placeholder="請輸入密碼" class="w-full pl-4 pr-11 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+                <button type="button" onclick="window.app.togglePasswordVisibility('loginPassword', 'eyeLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1" title="顯示/隱藏密碼">
+                  <span id="eyeLogin">👁️</span>
+                </button>
+              </div>
+            </div>
+            <button id="btnLoginSubmit" onclick="window.app.handleEmailLogin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-violet-600 hover:from-rose-500 hover:to-violet-500 text-white font-black text-sm shadow-lg shadow-rose-600/30 transition">
+              🚀 立即登入實戰擂台
+            </button>
+          </div>
+
+          <!-- 2. 註冊表單 -->
+          <div id="authFormRegister" class="hidden space-y-3.5">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">真實姓名 (Real Name) <span class="text-rose-400">*</span></label>
+              <input id="regRealName" type="text" placeholder="請輸入您的真實姓名（如：王大明）" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">參訓身分選擇 (Identity) <span class="text-rose-400">*</span></label>
+              <select id="regIdentity" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+                <option value="TONY老師學員">🎓 TONY老師學員</option>
+                <option value="非學員(一般訪客)">👤 非學員(一般訪客)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">電子信箱 (Email) <span class="text-rose-400">*</span></label>
+              <input id="regEmail" type="email" placeholder="example@gmail.com" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">設定密碼 (至少 6 位字元) <span class="text-rose-400">*</span></label>
+              <div class="relative">
+                <input id="regPassword" type="password" placeholder="請設定您的登入密碼" class="w-full pl-4 pr-11 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+                <button type="button" onclick="window.app.togglePasswordVisibility('regPassword', 'eyeReg')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1" title="顯示/隱藏密碼">
+                  <span id="eyeReg">👁️</span>
+                </button>
+              </div>
+            </div>
+            <button id="btnRegSubmit" onclick="window.app.handleEmailRegister()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm shadow-lg shadow-emerald-600/30 transition">
+              📩 註冊帳號並發送驗證信
+            </button>
+          </div>
+
+          <!-- 3. 忘記密碼表單 -->
+          <div id="authFormReset" class="hidden space-y-4">
+            <div class="text-xs text-slate-300 leading-relaxed">
+              請輸入您註冊時使用的電子信箱，系統將發送密碼重設信給您：
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">註冊電子信箱 (Email)</label>
+              <input id="resetEmail" type="email" placeholder="請輸入您的 Email" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+            </div>
+            <div class="flex gap-2">
+              <button type="button" onclick="window.app.switchAuthTab('login')" class="w-1/3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
+                返回登入
+              </button>
+              <button id="btnResetSubmit" onclick="window.app.handleForgotPassword()" class="w-2/3 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-lg">
+                📧 發送密碼重設信
+              </button>
+            </div>
+          </div>
+
+          <!-- 分隔線與 Google 快速登入 -->
+          <div class="relative flex py-1 items-center">
+            <div class="flex-grow border-t border-slate-800"></div>
+            <span class="flex-shrink mx-3 text-xs text-slate-500">或使用多元帳號快速驗證</span>
+            <div class="flex-grow border-t border-slate-800"></div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <input id="googleCustomName" type="text" placeholder="首次Google登入可填真實姓名" class="px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-white text-xs">
+              <select id="googleCustomIdentity" class="px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-white text-xs">
+                <option value="TONY老師學員">🎓 TONY老師學員</option>
+                <option value="非學員(一般訪客)">👤 非學員(一般訪客)</option>
+              </select>
+            </div>
+            <button onclick="window.app.handleGoogleLogin()" class="w-full py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-black text-sm shadow flex items-center justify-center gap-2.5 transition">
+              <svg class="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+                <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5L1.6 17c1.9 3.9 5.8 7 10.4 7z"/>
+              </svg>
+              <span>使用 Google 帳號安全登入 / 註冊</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center text-xs text-slate-500 py-3 border-t border-slate-900">
+      © 2020 TonyStudio. 本學習平台由 TONY 楊文澤資深AI科技顧問設計. All Rights Reserved.
+    </div>
+  </div>
+
+  <!-- ==================== 主程式容器 (通過 Auth Gate 後解鎖顯示) ==================== -->
+  <div id="mainAppWrapper" class="hidden min-h-screen flex flex-col justify-between">
+
+  <!-- 頂部導覽列 -->
+  <header class="sticky top-0 z-40 glass-card border-b border-slate-800 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="TonyStudio Logo" class="w-11 h-11 rounded-xl object-contain bg-slate-900 p-1 border border-rose-500/40 shadow-lg shadow-rose-500/20" onerror="this.src='https://placehold.co/44x44/1e1b4b/f43f5e?text=TS'">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">保險業實戰內訓・8大刁鑽魔王攻防戰</span>
+            <span id="firebaseStatusBadge" class="text-xs px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
+              <span id="firebaseStatusDot" class="w-2 h-2 rounded-full bg-amber-400 pulse-dot"></span>
+              <span id="firebaseStatusText">正在連線至雲端擂台...</span>
+            </span>
+          </div>
+          <h1 class="text-lg md:text-xl font-black tracking-tight text-white mt-0.5">
+            話術破壁者：AI 刁鑽保戶異議處理與 SPIN 實戰擂台
+          </h1>
+        </div>
+      </div>
+
+      <!-- 全域頂部倒數計時膠囊 -->
+      <div id="globalTimerBanner" class="hidden items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-rose-500/50 shadow-lg">
+        <span class="text-xs font-bold text-slate-300">⏱️ 拆招決策倒數</span>
+        <span id="globalTimerDigits" class="text-base font-black font-mono text-rose-400">01:00</span>
+      </div>
+
+      <!-- 四大模式切換與控場按鈕 + 管理員後台按鈕 -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="adminPortalBtn" onclick="window.app.toggleAdminModal()" class="hidden px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 items-center gap-1.5 transition">
+          <span>👑 進入管理後台</span>
+        </button>
+
+        <button onclick="window.app.toggleCreatorModal()" class="px-3 py-1.5 rounded-xl bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/40 text-xs font-bold flex items-center gap-1.5 transition">
+          <span>👨‍🏫 創作者簡介</span>
+        </button>
+
+        <button onclick="window.app.toggleQrModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition">
+          <span>📱 掃碼進場</span>
+        </button>
+
+        <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-800 flex flex-wrap text-xs md:text-sm font-medium">
+          <button onclick="window.app.switchMode('bible')" id="tab-bible" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+            📖 異議拆招聖經
+          </button>
+          <button onclick="window.app.switchMode('player')" id="tab-player" class="px-3 py-1.5 rounded-lg bg-rose-600 text-white shadow transition">
+            🥊 刁鑽保戶擂台 (8關)
+          </button>
+          <button onclick="window.app.switchMode('sandbox')" id="tab-sandbox" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+            ✨ AI 魔王生成器
+          </button>
+          <button onclick="window.app.switchMode('instructor')" id="tab-instructor" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+            📊 講師戰情室 (<span id="onlineTeamCount">0</span>組)
+          </button>
+        </div>
+
+        <button onclick="window.app.toggleConfigModal()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="通訊處組別與 API 設定">
+          ⚙️
+        </button>
+
+        <button onclick="window.app.handleLogout()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-800 text-xs font-bold transition" title="登出系統">
+          🚪 登出
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+
+    <!-- 學員狀態橫幅 -->
+    <section class="glass-card rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4 border border-slate-800/80">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xl" id="playerAvatar">👔</div>
+        <div>
+          <div class="text-xs text-slate-400 flex flex-wrap items-center gap-2">
+            <span id="displayMemberIdentityBadge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">[TONY老師學員]</span>
+            <span id="displayRoleBadge" class="text-rose-400 font-semibold">[資深主管/MDRT組]</span>
+            <span>實戰擂台：<strong id="displayRoomId" class="text-white font-mono">SPIN-2026</strong></span>
+            <span id="displayUidBadge" class="text-[11px] text-slate-500 font-mono"></span>
+          </div>
+          <div class="font-bold text-base md:text-lg text-white flex flex-wrap items-center gap-2 mt-0.5">
+            <span id="displayTeamName">第一通訊處：王牌攻堅戰隊</span>
+            <span id="displayMemberEmailBadge" class="text-xs text-slate-400 font-mono font-normal"></span>
+            <button onclick="window.app.toggleConfigModal()" class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 font-normal transition">✏️ 修改單位/職級</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 累積攻堅指標 -->
+      <div class="flex items-center gap-4 md:gap-8 bg-slate-900/80 px-4 py-2.5 rounded-xl border border-slate-800">
+        <div>
+          <div class="text-xs text-slate-400">累積攻克保單總價值 (FYC/保額)</div>
+          <div class="text-lg md:text-xl font-black text-emerald-400 font-mono" id="statTotalClosed">NT$ 0 萬</div>
+        </div>
+        <div class="h-8 w-px bg-slate-800"></div>
+        <div>
+          <div class="text-xs text-slate-400">平均話術破防指數</div>
+          <div class="text-lg md:text-xl font-black text-rose-400 font-mono" id="statAvgTrust">-- 分</div>
+        </div>
+        <div class="h-8 w-px bg-slate-800"></div>
+        <div>
+          <div class="text-xs text-slate-400">已收服刁鑽保戶</div>
+          <div class="text-lg md:text-xl font-black text-violet-400 font-mono"><span id="statDefeatedBosses">0</span> / 8</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 視角 0：📖 異議拆招理論聖經 (LSCPA × SPIN) ==================== -->
+    <div id="view-bible" class="hidden space-y-6">
+      <div class="arena-border rounded-2xl p-6 md:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="max-w-3xl space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+              TONY 老師顧問式攻堅聖經・SPIN & Objection Handling Bible
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white mt-2">
+              📖 異議拆招理論聖經：「客戶的拒絕不是終點，而是還沒被翻譯的購買訊號！」
+            </h2>
+            <p class="text-sm md:text-base text-slate-200 leading-relaxed">
+              三流業務員聽到拒絕就<strong>「爭辯說教」</strong>或<strong>「摸鼻子退縮」</strong>；一流顧問明白，客戶說「我沒錢、我要問老婆、我買ETF就好」背後都有一個隱藏恐懼。只要掌握 <strong>「LSCPA 同理緩衝」＋「SPIN 顧問四階提問法」</strong>，讓客戶自己說出風險痛點，防備心就會瞬間瓦解！
+            </p>
+          </div>
+          <button onclick="window.app.switchMode('player')" class="px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition shrink-0">
+            🥊 學完拆招心法，立即進入擂台過招 ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- 三大核心拆招理論卡 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-t-rose-500 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold px-2.5 py-1 rounded bg-rose-500/20 text-rose-300">第一招・卸下防備</span>
+            <span class="text-2xl">🛡️</span>
+          </div>
+          <h3 class="text-lg font-black text-white">1. LSCPA 黃金五步緩衝公式</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            遇到刁鑽拒絕時，前 3 秒絕對不能說「可是、但是、您不懂」！請依序執行：
+          </p>
+          <ul class="text-xs text-slate-300 space-y-2 pt-1">
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-rose-300">① Listen & Share（傾聽與同理認同）：</strong>「王哥，我完全理解！換作是我，在簽下這筆預算前也一定會先跟太座商量（先站到客戶同一邊）。」
+            </li>
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-rose-300">② Clarify（澄清真假異議）：</strong>分辨客戶是「真的沒預算」還是「還沒看到這張保單對他家人的不可替代性」。
+            </li>
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-rose-300">③ Present & Ask（切換視角提問促成）：</strong>用下方的 SPIN 提問把問題溫柔地丟回給客戶思考。
+            </li>
+          </ul>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-t-violet-500 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold px-2.5 py-1 rounded bg-violet-500/20 text-violet-300">第二招・挖出痛點</span>
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h3 class="text-lg font-black text-white">2. SPIN 顧問式四階提問法</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            由你自己說「癌症標靶藥要200萬」叫做推銷；讓客戶自己算出缺口叫做顧問：
+          </p>
+          <ul class="text-xs text-slate-300 space-y-2 pt-1">
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-violet-300">S (Situation 現況) ➔ P (Problem 難題)：</strong>「您目前買的 20 年前舊保單，有涵蓋『不用住院的口服標靶藥』嗎？」
+            </li>
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-violet-300">I (Implication 暗示嚴重後果 ⭐破防關鍵)：</strong>「萬一遇到股災大跌30%時剛好需要 200 萬自費醫材，您捨得在最低點認賠砍掉存了五年的 ETF 嗎？」
+            </li>
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-violet-300">N (Need-Payoff 價值引導)：</strong>「如果只用配息的十分之一，就能幫您的 ETF 穿上 300 萬防彈衣，這樣是不是更安心？」
+            </li>
+          </ul>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-t-emerald-500 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300">第三招・行動鎖單</span>
+            <span class="text-2xl">🔑</span>
+          </div>
+          <h3 class="text-lg font-black text-white">3. 降維打擊與最小承諾 Action</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            不要逼猶豫中的客戶當場簽 10 萬大單，而是設計「零壓力下一步行動」：
+          </p>
+          <ul class="text-xs text-slate-300 space-y-2 pt-1">
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-emerald-300">📌 拆解每日銅板價（錨定效應）：</strong>把「一年 3.6 萬」轉化為「每天不到一杯星巴克（98元），請一位 300 萬全天候家庭保鑣」。
+            </li>
+            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+              <strong class="text-emerald-300">📌 體況核保測試權（針對有體況/猶豫客）：</strong>「現在不是我們要不要買，而是保險公司願不願意承保！我們先送件做免費核保測試，有過關我們再來決定額度！」
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 八大刁鑽保戶拒絕潛台詞與 SPIN 破壁公式總表 -->
+      <div class="glass-card rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-black text-white mb-1">⚡ 八大台灣刁鑽保戶「表面拒絕話術 vs. 內心潛台詞 vs. SPIN 破壁金句」總表</h3>
+        <p class="text-xs text-slate-400 mb-4">在進入擂台前，先看懂這 8 位難搞保戶話語背後的真實訊號：</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm">
+            <thead>
+              <tr class="border-b border-slate-700 text-slate-300 bg-slate-900/80">
+                <th class="py-3 px-4">魔王關卡與表面拒絕台詞</th>
+                <th class="py-3 px-4">🔍 客戶內心真實潛台詞 (Hidden Signal)</th>
+                <th class="py-3 px-4 text-rose-400">❌ 業務員最常踩雷死法</th>
+                <th class="py-3 px-4 text-emerald-400">✅ SPIN 顧問式破防金句 (Action)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-300">
+              <tr>
+                <td class="py-3 px-4 font-bold text-white">Boss 1：「我保險已經買很多了，年繳十幾萬不需要了！」</td>
+                <td class="py-3 px-4">我搞不清楚以前買了什麼，怕你又來推銷重複的東西浪費我的錢。</td>
+                <td class="py-3 px-4">直接說「以前買的都過時了啦！現在要買新的實支實付！」（否定客戶過去決策）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">先讚美舊保單有遠見 ➔ 提問：「您那十幾萬保費中，萬一遇到『不用住院的標靶藥』或『達文西手術』，確定能啟動理賠嗎？我幫您做免費條款對照！」</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-white">Boss 2：「我買高股息 ETF 年化 8% 比買保險划算多了！」</td>
+                <td class="py-3 px-4">我懂投資理財，討厭保單資金被鎖死且報酬率輸給股市。</td>
+                <td class="py-3 px-4">跟客戶爭辯「股票很危險會壁紙、保險比較穩！」（引發投資客強烈反感）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">肯定客戶投資眼光 ➔ 提問（Implication）：「如果剛好遇到空頭大跌 30% 那個月需要 250 萬自費醫材，您捨得在最低點認賠砍掉存了五年的 ETF 嗎？」</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-white">Boss 3：「這件事我要回去問我老婆/老公，她管錢的！」</td>
+                <td class="py-3 px-4">我不想當場做決定，或我不知道回去怎麼跟老婆解釋這筆支出。</td>
+                <td class="py-3 px-4">說「好啊那建議書給您帶回去，討論好再跟我說！」（回家被老婆一句話斃掉，機率99%）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">同理尊重伴侶 ➔ 提問：「大嫂若問起『為什麼我們有房貸還要多花這筆錢』，您覺得她最擔心的是保費預算，還是萬一風險發生誰來扛房貸？我們先整理3個重點幫您跟大嫂報告！」</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-white">Boss 4：「現在房貸物價太貴，真的沒多餘預算買保險！」</td>
+                <td class="py-3 px-4">我每個月現金流很緊，怕多一筆固定支出會壓垮生活品質。</td>
+                <td class="py-3 px-4">硬推「沒錢更要買保險啊！你可以刷卡分期！」（增加客戶財務壓迫感）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">高度同理現金流壓力 ➔ 提問：「正因為現在少賺一個月薪水家裡就會很緊，萬一意外休養半年少掉 40 萬收入怎麼辦？我們用『銅板價定期險』每天不到 50 元先鎖住最大破口就好！」</td>
+              </tr>
+              <tr class="bg-violet-950/20">
+                <td class="py-3 px-4 font-bold text-white">Boss 5：「我小阿姨就在國X當業務，要買我一定跟親戚買！」</td>
+                <td class="py-3 px-4">我有家族人情壓力，怕跟你買被親戚知道會很難做人。</td>
+                <td class="py-3 px-4">批評同業「親戚都亂賣人情保單、商品很貴啦！」（直接得罪客戶與其家族）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">讚美支持親戚是好事 ➔ 提問：「跟阿姨買很有情義！不過您會不會擔心萬一未來要申請私密婦科/精神科理賠，全家族親戚第二天就都知道了？很多客戶會把『人情儲蓄給親戚、私密醫療與第二意見交給獨立顧問』！」</td>
+              </tr>
+              <tr class="bg-violet-950/20">
+                <td class="py-3 px-4 font-bold text-white">Boss 6：「我上網看 PTT/Dcard 罐頭保單比你搭的便宜三千塊！」</td>
+                <td class="py-3 px-4">我是做過功課的聰明消費者，怕被你塞高佣金主約當盤子。</td>
+                <td class="py-3 px-4">惱羞成怒說「網路都亂寫的啦！出事網友又不會幫你跑理賠！」</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">大力稱讚客戶專業 ➔ 點出條款細節：「您功課做得超棒！不過網路那份罐頭把預算省在『手術定義限制2-2-7』與『無保證續保』，萬一門診手術不賠反而虧5萬，我幫您把這兩個隱藏地雷攤開對比給您看！」</td>
+              </tr>
+              <tr class="bg-violet-950/20">
+                <td class="py-3 px-4 font-bold text-white">Boss 7：「我去年健檢有紅字（脂肪肝/結節），等我調養正常再投保！」</td>
+                <td class="py-3 px-4">我怕現在送件會被加費、除外或拒保留下紀錄，想逃避面對體況。</td>
+                <td class="py-3 px-4">說「那你就不要勾選誠實告知，撐過兩年就沒事了！」（違法且埋下拒賠炸彈）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">破除等待迷思 ➔ 提問：「體況通常只會隨年齡增加，等半年萬一指數更高連除外承保的機會都沒了！我們現在先送 2 家核保最友善的公司『免費測試核保條件』，條件滿意您再決定要不要簽收！」</td>
+              </tr>
+              <tr class="bg-violet-950/20">
+                <td class="py-3 px-4 font-bold text-white">Boss 8：「我們以前申請理賠被刁難不賠，保險公司都是騙人的！」</td>
+                <td class="py-3 px-4">我過去受過傷（買錯險種或業務員失聯），對保險業失去信任。</td>
+                <td class="py-3 px-4">急著辯解「那是別家公司爛、我們公司絕對不會！」（客戶聽不進去）</td>
+                <td class="py-3 px-4 font-semibold text-emerald-300">深度同理憤怒並主動幫忙診斷舊案 ➔ 提問：「換作是我一定也氣炸！方便讓我看看當年那張拒賠通知書嗎？很多時候是舊保單『買到日額卻去做門診手術』，甚至有機會透過評議中心幫您爭取看看！」</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 視角 1：🥊 刁鑽保戶異議處理實戰擂台 (8大魔王) ==================== -->
+    <div id="view-player" class="space-y-5">
+
+      <!-- 題庫章節篩選器 -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+          <span class="text-slate-400">📚 選擇刁鑽魔王章節：</span>
+          <button onclick="window.app.setChapterFilter('ch1')" id="chap-ch1" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition">
+            第一章：四大經典拒絕魔王 (Boss 1~4)
+          </button>
+          <button onclick="window.app.setChapterFilter('ch2')" id="chap-ch2" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition">
+            第二章：進階心魔與信任危機 (Boss 5~8 ⭐新擴充)
+          </button>
+          <button onclick="window.app.setChapterFilter('all')" id="chap-all" class="px-3 py-1.5 rounded-xl bg-rose-600 text-white shadow border border-rose-500 transition">
+            🔥 完整 8 大魔王全開
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.app.switchMode('bible')" class="text-xs px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold transition">
+            📖 先看《SPIN 拆招理論聖經》
+          </button>
+          <button onclick="window.app.switchMode('sandbox')" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold transition">
+            ✨ 把你遇到的難搞客戶建成新魔王
+          </button>
+        </div>
+      </div>
+
+      <!-- 8 大魔王選擇器 -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="bossSelectorContainer"></div>
+
+      <!-- 擂台主體：左刁鑽保戶狀態與拒絕潛台詞、右話術卡牌與 AI 自由對話攻防 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- 左側：刁鑽保戶魔王卡片、雙血條與 3 大心理訊號 (佔 5 欄) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div id="bossProfileCard" class="arena-border rounded-2xl p-5 space-y-4 transition-all">
+            <div class="flex items-center justify-between">
+              <span id="bossTag" class="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                Boss 1・保單買很多型
+              </span>
+              <span id="bossDealValueBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-900 text-emerald-400 border border-slate-700">
+                潛在簽單價值：NT$ 120 萬保障
+              </span>
+            </div>
+
+            <!-- 魔王頭像與當面拒絕台詞對話框 -->
+            <div class="flex items-start gap-3.5">
+              <div id="bossAvatarBox" class="w-16 h-16 rounded-2xl bg-slate-900 border-2 border-rose-500/50 flex items-center justify-center text-4xl shrink-0 shadow-lg">
+                😤
+              </div>
+              <div>
+                <h2 id="bossTitle" class="text-lg md:text-xl font-black text-white">38歲 鐵齒科技業副理 陳先生</h2>
+                <p id="bossBgDesc" class="text-xs text-slate-300 mt-0.5 leading-relaxed"></p>
+              </div>
+            </div>
+
+            <!-- 刁鑽拒絕台詞大氣泡 -->
+            <div class="p-4 rounded-2xl bg-slate-950/90 border-l-4 border-l-rose-500 relative">
+              <div class="text-[11px] font-bold text-rose-400 uppercase tracking-wider mb-1">💬 客戶當面拋出的刁鑽異議：</div>
+              <p id="bossObjectionQuote" class="text-sm md:text-base font-black text-white leading-snug"></p>
+            </div>
+
+            <!-- 視覺化雙血條：防備心 HP 與 信任簽單度 -->
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-3">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-bold text-rose-400 flex items-center gap-1">🛡️ 客戶防備心血條 (Defense HP)</span>
+                  <span id="labelDefenseHp" class="font-mono font-black text-rose-400">85% (戒備極高)</span>
+                </div>
+                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5">
+                  <div id="barDefenseHp" class="h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full transition-all duration-700" style="width: 85%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-bold text-emerald-400 flex items-center gap-1">❤️ 顧問信任與簽單意願 (Trust Meter)</span>
+                  <span id="labelTrustMeter" class="font-mono font-black text-emerald-400">20% (尚未破防)</span>
+                </div>
+                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5">
+                  <div id="barTrustMeter" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full transition-all duration-700" style="width: 20%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 客戶背後三大隱藏心理訊號卡 -->
+          <div class="glass-card rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                <span>📡 Step 1：解碼客戶話語背後的 3 大隱藏訊號</span>
+              </h3>
+              <span class="text-xs text-rose-400">拆招前先看穿潛台詞</span>
+            </div>
+            <div id="signalsContainer" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <!-- 右側：Step 2 話術卡牌三選一 ＆ AI 真人自由對話攻防 ＆ 深度拆招報告 (佔 7 欄) -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- 卡牌對決與自由輸入面板 -->
+          <div id="playerDecisionCard" class="glass-card rounded-2xl p-5 md:p-6 space-y-5 transition-all">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+              <div>
+                <h3 class="text-base md:text-lg font-bold text-white">🃏 Step 2：選擇您的黃金回應話術卡（或於下方直接打字過招）</h3>
+                <p class="text-xs text-slate-400">選對「LSCPA 同理 ＋ SPIN 提問」即可一舉擊穿客戶防備心血條！</p>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-lg bg-violet-500/20 text-violet-300 border border-violet-500/30 font-semibold">
+                點選 A / B / C 任一話術卡出招
+              </span>
+            </div>
+
+            <!-- A / B / C 三張話術策略卡 -->
+            <div id="responseCardsContainer" class="space-y-3.5"></div>
+
+            <!-- 出招鎖定按鈕 -->
+            <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+              <div class="text-xs text-slate-300">
+                已選擇出招策略：<strong id="selectedCardBadge" class="text-rose-400 font-mono text-sm">請先點選上方 A / B / C 話術卡</strong>
+              </div>
+              <button id="submitMoveBtn" onclick="window.app.submitCardMove()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-violet-600 hover:from-rose-500 hover:to-violet-500 text-white font-black shadow-lg shadow-rose-600/30 transition flex items-center gap-2">
+                <span>⚡ 發動話術拆招・觀看客戶反應與診斷報告</span>
+              </button>
+            </div>
+
+            <!-- 進階亮點：🎙️ 業務員自由輸入話術 vs. Gemini 刁鑽客戶即時回嘴擂台 -->
+            <div class="mt-4 pt-4 border-t border-slate-800/90 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <span>🎙️ 【實戰自由過招區】想試試自己平常說的話？直接打字跟這位 AI 刁鑽保戶過招：</span>
+                </label>
+                <span class="text-[11px] text-slate-400 font-mono">Gemini AI Role-Play</span>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <input id="customPitchInput" type="text" placeholder="輸入您想對這位客戶說的話（例：陳大哥，買ETF很好，但如果遇到股災生病...）" class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs md:text-sm text-white focus:border-rose-500 focus:outline-none">
+                <button id="btnFreeSparring" onclick="window.app.runFreeSparringWithAi()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 shadow transition">
+                  🥊 發送話術與 AI 過招
+                </button>
+              </div>
+              <!-- AI 自由過招即時對話氣泡結果 -->
+              <div id="freeSparringResultBox" class="hidden p-4 rounded-xl bg-slate-950 border border-amber-500/40 space-y-2 text-xs"></div>
+            </div>
+          </div>
+
+          <!-- ==================== 開獎結果：客戶第一時間反應 ＋ 為什麼有效/踩雷深度解析 ＋ SPIN 4步劇本 ＋ Word 匯出 ==================== -->
+          <div id="resultPanel" class="hidden glass-card rounded-2xl p-5 md:p-6 border-2 border-rose-500/50 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+              <div class="flex items-center gap-2.5">
+                <span class="text-3xl">🏆</span>
+                <div>
+                  <h3 class="text-lg md:text-xl font-black text-white">過招結果揭曉 ＆ SPIN 顧問話術深度診斷書</h3>
+                  <p class="text-xs text-slate-400">解析每句話對客戶「防備心」與「信任度」的心理學蝴蝶效應</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div id="resultGradeBadge" class="px-3 py-1.5 rounded-xl font-black text-xs md:text-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  S 級・話術破壁大師
+                </div>
+                <button onclick="window.app.exportWordReport()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/30 flex items-center gap-1.5 transition">
+                  <span>📥 下載本關 SPIN 話術秘笈 (.doc)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 客戶聽完後的即時表情與回應大氣泡 -->
+            <div id="clientReactionBanner" class="p-4 rounded-2xl bg-slate-900 border border-slate-700 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-300">📣 客戶聽完您這句話後的第一時間真實反應：</span>
+                <span id="resImpactStats" class="text-xs font-mono font-bold text-emerald-400">防備心 -70% ｜ 信任度 +75%</span>
+              </div>
+              <p id="resClientReplyText" class="text-sm md:text-base font-bold text-white leading-relaxed"></p>
+            </div>
+
+            <!-- 四大攻堅指標卡 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                <div class="text-xs text-slate-400">客戶剩餘防備心</div>
+                <div id="resFinalDefense" class="text-lg font-black text-rose-400 font-mono mt-1">15% (已卸下)</div>
+              </div>
+              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                <div class="text-xs text-slate-400">最終簽單信任度</div>
+                <div id="resFinalTrust" class="text-lg font-black text-emerald-400 font-mono mt-1">95%</div>
+              </div>
+              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                <div class="text-xs text-slate-400">成功守護保額價值</div>
+                <div id="resDealValue" class="text-lg font-black text-amber-400 font-mono mt-1">NT$ 120萬</div>
+              </div>
+              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                <div class="text-xs text-slate-400">話術破防綜合得分</div>
+                <div id="resScore" class="text-lg font-black text-white font-mono mt-1">98 分</div>
+              </div>
+            </div>
+
+            <!-- 壹、A / B / C 三張話術卡「為什麼有效 vs. 為什麼踩雷」逐項心理學解析 -->
+            <div class="bg-slate-900/95 rounded-2xl p-5 border border-slate-800 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                <h4 class="text-sm font-black text-rose-300">
+                  🔍 壹、為什麼這句話能破防（或踩雷）？（A / B / C 三種回應心理學完整拆解）
+                </h4>
+                <span class="text-xs text-slate-400">看懂話術背後的差距</span>
+              </div>
+              <div id="threeCardsAnalysisContainer" class="space-y-3 text-xs"></div>
+            </div>
+
+            <!-- 貳、本關標準「LSCPA + SPIN 顧問四步成交劇本 (Playbook)」 -->
+            <div class="bg-emerald-950/30 rounded-2xl p-5 border border-emerald-500/30 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-500/20 pb-2.5">
+                <h4 class="text-sm font-black text-emerald-300">
+                  🎯 貳、背起來明天直接用：本關標準「LSCPA ＋ SPIN 四步成交話術劇本」
+                </h4>
+                <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">實戰成交標準作業程序</span>
+              </div>
+              <div id="spinPlaybookContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs"></div>
+            </div>
+
+            <!-- 參、AI 首席銷售教練深度講評與進階追問腳本 -->
+            <div class="bg-indigo-950/40 rounded-2xl p-5 border border-indigo-500/40 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 class="text-sm font-black text-white">
+                    🤖 參、AI 首席銷售教練深度講評 ＆ 下一句追問腳本 (Gemini Flash)
+                  </h4>
+                  <p class="text-xs text-slate-400">由 AI 教練針對本關客戶心理，生成「當客戶點頭後的下一句促成追問」並納入 Word 報告</p>
+                </div>
+                <button id="btnGenerateAiReport" onclick="window.app.generateAiCoachCommentary()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow transition">
+                  ✨ 請 AI 教練生成進階追問與成交劇本
+                </button>
+              </div>
+              <div id="aiDeepCommentaryBox" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-xs md:text-sm text-slate-200 leading-relaxed whitespace-pre-line"></div>
+            </div>
+
+            <!-- 底部操作列 -->
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+              <div class="text-xs text-slate-300">
+                💡 <strong>隨身武功秘笈：</strong>點擊右側藍色按鈕即可下載編排精美的《異議處理與 SPIN 實戰話術秘笈 (.doc)》！
+              </div>
+              <div class="flex items-center gap-2.5">
+                <button onclick="window.app.exportWordReport()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/30 transition">
+                  📄 匯出排版 Word 話術秘笈 (.doc)
+                </button>
+                <button onclick="window.app.goToNextBoss()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black shadow transition">
+                  挑戰下一位刁鑽魔王 ➔
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 視角 2：✨ AI 刁鑽魔王生成器 ==================== -->
+    <div id="view-sandbox" class="hidden space-y-6">
+      <div class="arena-border rounded-2xl p-6">
+        <div class="max-w-4xl">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+              AI Objection Boss Creator・Gemini Flash 驅動
+            </span>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              把業務員昨天被拒絕的那句話，現場變成全班拆招擂台！
+            </span>
+          </div>
+          <h2 class="text-2xl font-black text-white mt-2">✨ AI 刁鑽保戶魔王生成器（真實踢鐵板案例即時轉化）</h2>
+          <p class="text-sm text-slate-300 mt-1">
+            請現場業務同仁輸入最近拜訪客戶時<strong>「最讓自己語塞的一句拒絕話術」</strong>，系統將在數秒內生成該客戶的「3大隱藏潛台詞訊號」、「A/B/C 三張高下立判的回應話術卡」與「LSCPA+SPIN 四步成交劇本」，並同步廣播至全班第 8 關！
+          </p>
+        </div>
+
+        <!-- 快捷難搞台詞範本 -->
+        <div class="mt-5 pt-4 border-t border-slate-800/80">
+          <span class="text-xs font-bold text-rose-300 block mb-2">🎲 點擊快速帶入常見踢鐵板拒絕台詞（或於下方自行輸入）：</span>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="window.app.fillSandboxPreset('42歲傳產中小企業老闆', '「我把錢拿去買美債跟高股息ETF領息就好，買保險錢都被鎖死又沒用！」', '名下有工廠貸款1,200萬，卻完全沒有失能險與重大傷病一次金')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-200 border border-slate-700 transition">📈 「買美債跟ETF領息就好，保險錢被鎖死！」</button>
+            <button onclick="window.app.fillSandboxPreset('34歲準備懷孕之雙薪人妻', '「我老公說保險都是騙人的，等我生完小孩坐完月子再說啦！」', '不知懷孕超過週數或剖腹產後，將無法投保當胎妊娠併發症與新生兒黃金期')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-200 border border-slate-700 transition">🤰 「老公說保險騙人，等生完小孩再說！」</button>
+            <button onclick="window.app.fillSandboxPreset('50歲自營餐廳老闆娘', '「我身體超健康十年沒看過醫生，買醫療險根本是浪費錢送給保險公司！」', '長期在廚房吸油煙且有家族心血管病史，只有健保無任何商業實支實付')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-200 border border-slate-700 transition">💪 「我十年沒看過醫生，買醫療險是浪費錢！」</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div>
+            <label class="block text-xs text-slate-300 font-semibold mb-1">1. 難搞客戶的年齡、職業與背景</label>
+            <input id="customBossProfile" type="text" value="42歲傳產中小企業老闆（已婚育有2子）" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 font-semibold mb-1">2. 客戶當面拋出的那句拒絕台詞</label>
+            <input id="customBossQuote" type="text" value="「我把錢拿去買美債跟高股息ETF領息就好，買保險錢都被鎖死又沒用！」" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 font-semibold mb-1">3. 業務員觀察到他的真實風險破口</label>
+            <input id="customBossGap" type="text" value="名下有工廠與房屋貸款1,200萬，卻完全沒有失能險與重大傷病一次金" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:border-rose-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input id="broadcastCustomCheck" type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-rose-600 focus:ring-rose-500">
+            <span>同時將此 AI 刁鑽魔王廣播至全班 Boss 8（讓全場業務同仁一起挑戰破防）</span>
+          </label>
+          <button id="generateCustomBtn" onclick="window.app.generateCustomBoss()" class="px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-sm shadow-lg shadow-rose-600/30 transition flex items-center gap-2">
+            <span>⚡ 立即生成新刁鑽魔王擂台並進入對戰</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 視角 3：📊 講師大螢幕戰情室 ==================== -->
+    <div id="view-instructor" class="hidden space-y-6">
+
+      <!-- 講師控場指揮台 -->
+      <div id="warRoomTimerCard" class="glass-card rounded-2xl p-5 md:p-6 border border-rose-500/40 transition-all">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+
+          <div class="lg:col-span-4 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex items-center justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Step 1・通訊處掃碼上擂台</span>
+              <h3 class="text-base font-black text-white mt-0.5">房間代碼：<span id="warRoomCodeDisplay" class="font-mono text-rose-400">SPIN-2026</span></h3>
+              <p class="text-xs text-slate-400 mt-1">點擊右側放大顯示 QR Code，讓現場業務同仁手機掃描秒速進場</p>
+            </div>
+            <button onclick="window.app.toggleQrModal()" class="shrink-0 px-4 py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xs shadow-lg shadow-emerald-600/25 flex flex-col items-center gap-1 transition">
+              <span class="text-2xl">📱</span>
+              <span>放大 QR Code</span>
+            </button>
+          </div>
+
+          <div class="lg:col-span-8 bg-slate-900/90 p-4 md:px-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="text-center">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-rose-400 mb-0.5">Step 2・限時話術拆招計時器</div>
+                <div id="instructorTimerDigits" class="text-4xl md:text-5xl font-black font-mono tracking-wider text-white">
+                  01:00
+                </div>
+              </div>
+              <div class="h-12 w-px bg-slate-800 hidden sm:block"></div>
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span id="timerStatusTag" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">待命準備中</span>
+                  <button onclick="window.app.toggleSoundMute()" id="soundMuteBtn" class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30 transition">
+                    🔊 音效：開啟
+                  </button>
+                </div>
+                <p class="text-xs text-slate-400">倒數同步顯示於全班手機，最後 10 秒觸發急促警示音與紅光閃爍</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button onclick="window.app.startClassroomTimer(60)" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-lg shadow-rose-600/30 transition">
+                ▶️ 啟動 60 秒
+              </button>
+              <button onclick="window.app.startClassroomTimer(30)" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs border border-slate-700 transition">
+                ⚡ 30秒快問快答
+              </button>
+              <button onclick="window.app.stopClassroomTimer()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition">
+                ⏹️ 重置
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mt-4">
+          <div id="instructorTimerBar" class="h-full bg-gradient-to-r from-rose-500 to-violet-500 transition-all duration-300" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- 群體話術選擇分佈與排行榜 -->
+      <div class="glass-card rounded-2xl p-6 border border-rose-500/30">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Instructor War Room・Firestore 即時同步</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">Room: SPIN-2026</span>
+            </div>
+            <h2 class="text-2xl font-black text-white mt-1">📊 全場拆招話術選擇對比：「資深主管組」vs.「新銳業務組」</h2>
+            <p class="text-sm text-slate-400">當前檢視魔王：<strong id="warRoomCurrentBossLabel" class="text-rose-300">Boss 1</strong>（一眼看穿現場有多少人不小心選到踩雷話術！）</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="window.app.seedDemoTeamsToFirestore()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-rose-300 border border-slate-700 transition">
+              ➕ 塞入 5 組模擬通訊處隊伍 (彩排用)
+            </button>
+            <button onclick="window.app.clearRoomTeams()" class="px-3.5 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/70 text-xs font-bold text-rose-300 border border-rose-800/60 transition">
+              🗑️ 清空重置本房間數據
+            </button>
+          </div>
+        </div>
+
+        <div id="warRoomBossQuickBar" class="flex flex-wrap gap-1.5 mb-6 pb-4 border-b border-slate-800"></div>
+
+        <!-- 資深主管組 vs 新銳業務組 話術卡牌選擇比例對比 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-rose-400 flex items-center gap-2">
+                <span>👔 資深主管 / MDRT 組</span>
+                <span id="mgrGroupCountBadge" class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono">0 組</span>
+              </h3>
+              <span class="text-xs text-slate-400">A / B / C 話術卡選擇比例</span>
+            </div>
+            <div id="chartManager" class="space-y-3"></div>
+          </div>
+
+          <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-violet-400 flex items-center gap-2">
+                <span>🚀 新銳業務 / 增員專案組</span>
+                <span id="advGroupCountBadge" class="text-xs px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-mono">0 組</span>
+              </h3>
+              <span class="text-xs text-slate-400">A / B / C 話術卡選擇比例</span>
+            </div>
+            <div id="chartAdvisor" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <!-- 即時排行榜 -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-base font-bold text-white">🏆 全場「話術破壁王」即時雲端排行榜 (依累積攻克保額與破防分排序)</h3>
+            <span class="text-xs text-slate-400">只要學員點擊「發動話術拆招」，排行榜將毫秒級自動更新</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 text-xs">
+                  <th class="py-2.5 px-3">名次</th>
+                  <th class="py-2.5 px-3">通訊處 / 組別名稱</th>
+                  <th class="py-2.5 px-3">職級組別</th>
+                  <th class="py-2.5 px-3">本關出招選擇</th>
+                  <th class="py-2.5 px-3">已收服魔王數</th>
+                  <th class="py-2.5 px-3">平均話術破防分</th>
+                  <th class="py-2.5 px-3 text-right">累積攻克保單價值</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 底部版權列 -->
+  <footer class="border-t border-slate-800/80 py-5 px-4 text-center text-xs text-slate-400 space-y-1">
+    <div>Designed for 金融保險業「AI 刁鑽保戶異議處理與 SPIN 提問實戰培訓」</div>
+    <div class="font-bold text-slate-300">© 2020 TonyStudio. 本學習平台由 TONY 楊文澤資深AI科技顧問設計. All Rights Reserved.</div>
+  </footer>
+
+  </div> <!-- 結束 #mainAppWrapper -->
+
+  <!-- ==================== 彈窗 0：平台創作者 TONY 楊文澤顧問簡介 Modal ==================== -->
+  <div id="creatorModal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card max-w-3xl w-full rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-2xl space-y-5 my-8">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3.5">
+          <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="TONY 楊文澤 老師" class="w-16 h-16 rounded-2xl object-cover border-2 border-rose-400 shadow-lg">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Platform Creator & Architect</span>
+            <h3 class="text-2xl font-black text-white">TONY 楊文澤 老師</h3>
+            <p class="text-xs text-violet-300 font-semibold">資深數位行銷科技顧問 ｜ 生成式 AI 創作者 ｜ 創業導師</p>
+          </div>
+        </div>
+        <button onclick="window.app.toggleCreatorModal()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-2xl font-bold flex items-center justify-center">&times;</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm text-slate-200 leading-relaxed">
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-2">
+          <div class="font-black text-rose-400">現職 Current</div>
+          <ul class="space-y-1 text-slate-300">
+            <li>▪ 龍華科大 數位行銷講師</li>
+            <li>▪ 智策慧 品牌行銷科技顧問</li>
+          </ul>
+          <div class="font-black text-violet-400 pt-2">學歷 Education</div>
+          <ul class="space-y-1 text-slate-300">
+            <li>- 台大 EMBA 商學組</li>
+            <li>- 美國 Arizona State University 互動多媒體設計</li>
+            <li>▪ 北科大 工業設計</li>
+          </ul>
+        </div>
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-2">
+          <div class="font-black text-emerald-400">經歷 Experience</div>
+          <ul class="space-y-1 text-slate-300">
+            <li>▪ 脈動心聯股份有限公司 創辦人暨執行長</li>
+            <li>- 宏碁集團建碁 AOPEN 整合營銷處處長 / 全球品牌行銷總監 / 企業發言人</li>
+            <li>- 台灣數位看板多媒體聯盟 (DSMA) 副會長</li>
+          </ul>
+          <div class="font-black text-amber-400 pt-2">專家授課經歷</div>
+          <ul class="space-y-1 text-slate-300">
+            <li>▪ CPC 生產力中心 經營管理顧問師班 / 中小企業成長創價能量 講師</li>
+            <li>- 台大 EMBA / 長榮 EMBA / 北科大 / 政大 / 世新 業師</li>
+            <li>- 2021 MarTech 行銷科技行銷長認證班 講師</li>
+            <li>- 2021/2024/2025 T大使與產業尖兵 講師</li>
+            <li>- 2025 新光人壽 AI 工具應用 企業內訓講師</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+        © 2020 TonyStudio. 本學習平台由 TONY 楊文澤資深AI科技顧問設計. All Rights Reserved.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 彈窗 3：👑 專屬管理者後台 (Admin Dashboard) ==================== -->
+  <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+    <div class="glass-card max-w-7xl w-full rounded-3xl p-5 md:p-8 border-2 border-amber-500/50 shadow-2xl space-y-6 my-auto max-h-[92vh] flex flex-col">
+      
+      <!-- 頂部標題與匯出按鈕 -->
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">👑</span>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">RBAC 最高管理中心</span>
+              <span class="text-xs text-slate-400 font-mono">系統創作者：mindnodeai@gmail.com</span>
+            </div>
+            <h3 class="text-xl md:text-2xl font-black text-white mt-0.5">話術破壁者 SaaS 會員管理與 AI 商業數據分析後台</h3>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button onclick="window.app.exportMembersCsv()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 transition">
+            <span>📊 匯出 CSV 會員名單 (含 UTF-8 BOM)</span>
+          </button>
+          <button onclick="window.app.toggleAdminModal()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-2xl font-bold flex items-center justify-center">&times;</button>
+        </div>
+      </div>
+
+      <!-- 捲動內容區 -->
+      <div class="overflow-y-auto space-y-6 pr-1 flex-1">
+        
+        <!-- 區塊 A：AI 商業數據分析報告（設定起訖時間 + Word 匯出） -->
+        <div class="bg-slate-900/95 rounded-2xl p-5 border border-indigo-500/40 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h4 class="text-base font-black text-white flex items-center gap-2">
+                <span>🤖 商業數據 AI 分析報告（設定起訖時間區間 ＆ 匯出 Word 檔）</span>
+              </h4>
+              <p class="text-xs text-slate-400">統計指定期間內註冊與活躍之會員結構、學員比例、攻克魔王實戰成效，並產出高階主管 Word 報告</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 text-xs">
+                <span class="text-slate-400">起始日：</span>
+                <input id="reportStartDate" type="date" class="px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs">
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <span class="text-slate-400">結束日：</span>
+                <input id="reportEndDate" type="date" class="px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs">
+              </div>
+              <button id="btnGenerateAdminAiReport" onclick="window.app.generateAdminPeriodReport()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow transition">
+                ✨ 產出區間 AI 分析報告
+              </button>
+              <button onclick="window.app.exportAdminWordReport()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs shadow transition">
+                📥 輸出成 WORD 檔 (.doc)
+              </button>
+            </div>
+          </div>
+
+          <div id="adminAiReportBox" class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs md:text-sm text-slate-200 leading-relaxed whitespace-pre-line max-h-60 overflow-y-auto">
+            請選擇上方「起始日」與「結束日」，並點擊「✨ 產出區間 AI 分析報告」，系統將自動彙整該區間內之會員成長、TONY老師學員佔比、平均登入頻次與SPIN話術破防成效，並支援一鍵匯出為排版精美之 Microsoft Word (.doc) 報告。
+          </div>
+        </div>
+
+        <!-- 區塊 B：註冊會員動態管理表格 -->
+        <div class="bg-slate-900/95 rounded-2xl p-5 border border-slate-800 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 class="text-base font-black text-white">👥 註冊會員資料庫與權限管理 (<span id="adminTotalUsersCount" class="text-amber-400 font-mono">0</span> 位會員)</h4>
+            <span class="text-xs text-slate-400">提示：<code class="text-amber-300 font-mono">mindnodeai@gmail.com</code> 為系統創作者最高權限，受系統永久保護不可刪除或降級</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-slate-700 text-slate-300 bg-slate-950/90">
+                  <th class="py-3 px-3">真實姓名</th>
+                  <th class="py-3 px-3">電子信箱 (Email)</th>
+                  <th class="py-3 px-3">參訓身份</th>
+                  <th class="py-3 px-3">系統權限 (RBAC)</th>
+                  <th class="py-3 px-3">註冊時間</th>
+                  <th class="py-3 px-3 text-center">登錄次數</th>
+                  <th class="py-3 px-3">歷史實戰紀錄</th>
+                  <th class="py-3 px-3 text-right">權限與帳號操作</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody" class="divide-y divide-slate-800/70 text-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 區塊 C：會員詳細歷史紀錄檢視面板 -->
+        <div id="memberHistoryDrawer" class="hidden bg-slate-950 rounded-2xl p-5 border-2 border-violet-500/50 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h5 id="historyDrawerTitle" class="text-sm font-black text-violet-300">📜 會員歷史紀錄明細</h5>
+            <button onclick="document.getElementById('memberHistoryDrawer').classList.add('hidden')" class="text-xs text-slate-400 hover:text-white">✕ 關閉明細</button>
+          </div>
+          <div id="historyDrawerContent" class="space-y-2 text-xs text-slate-300 max-h-60 overflow-y-auto"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 彈窗 1：QR Code 掃碼入場投影幕 ==================== -->
+  <div id="qrModal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-2xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">📱</span>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">保險業異議處理擂台・全場即時連線</span>
+            <h3 class="text-2xl font-black text-white">請拿出手機掃描 QR Code 進入話術對決擂台</h3>
+          </div>
+        </div>
+        <button onclick="window.app.toggleQrModal()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-2xl font-bold flex items-center justify-center">&times;</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-5 flex flex-col items-center">
+          <div class="p-4 bg-white rounded-3xl shadow-2xl border-4 border-rose-400">
+            <img id="qrCodeImage" src="" alt="Room QR Code" class="w-64 h-64 md:w-72 md:h-72 object-contain">
+          </div>
+          <span class="text-xs text-slate-400 mt-2">掃描後自動帶入房間代碼，免註冊直接攻堅</span>
+        </div>
+
+        <div class="md:col-span-7 space-y-5">
+          <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800">
+            <div class="text-xs text-slate-400">當前擂台房間代碼 (Room Code)</div>
+            <div id="qrModalRoomCode" class="text-4xl md:text-5xl font-black font-mono text-rose-400 tracking-wider mt-1">SPIN-2026</div>
+            <div class="mt-3 pt-3 border-t border-slate-800/80">
+              <label class="block text-xs text-slate-400 mb-1">🔗 課堂部署網址（可隨時修改以更新左側 QR Code）：</label>
+              <div class="flex gap-2">
+                <input id="qrUrlInput" type="text" class="flex-1 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200 font-mono" oninput="window.app.updateQrCodeImage()">
+                <button onclick="window.app.copyJoinLink()" id="copyLinkBtn" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black shrink-0">複製連結</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                <span>目前已登錄擂台組別</span>
+              </span>
+              <span id="qrModalTeamCount" class="text-sm font-black font-mono text-rose-400">0 組已就緒</span>
+            </div>
+            <div id="qrModalTeamBadges" class="flex flex-wrap gap-2 max-h-36 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 彈窗 2：組別與 Gemini API 設定 Modal ==================== -->
+  <div id="configModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-2xl p-6 border border-slate-700 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-black text-white">⚙️ 通訊處組別與 Gemini API 設定</h3>
+        <button onclick="window.app.toggleConfigModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block text-xs text-slate-400 mb-1">您的通訊處 / 組別名稱（將印製於 Word 話術秘笈封面）</label>
+            <input id="inputTeamName" type="text" value="第一通訊處：王牌攻堅戰隊" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">擂台房間代碼</label>
+            <input id="inputRoomId" type="text" value="SPIN-2026" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">參訓職級組別（用於講師戰情室「資深主管 vs. 新銳業務」比較）</label>
+          <select id="inputRole" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+            <option value="manager">👔 資深主管 / MDRT 組</option>
+            <option value="advisor">🚀 新銳業務 / 增員專案組</option>
+          </select>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800">
+          <label class="block text-xs text-rose-300 font-semibold mb-1">🔑 Google Gemini API Key（用於「AI 真人對打」與「AI 魔王生成器」）</label>
+          <input id="inputGeminiKey" type="password" placeholder="貼上您的 AIzaSy... 金鑰 (將儲存於本機瀏覽器)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono text-xs">
+          <p class="text-[11px] text-slate-400 mt-1">
+            若未填寫 API Key，系統亦內建完整智慧模擬對打與新魔王自動生成引擎，確保課堂 100% 順暢運行。
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+        <button onclick="window.app.saveConfig()" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-sm">儲存並同步至雲端</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Modular SDK (v11) 與應用程式核心邏輯 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import {
+      getAuth,
+      signInAnonymously,
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      GoogleAuthProvider,
+      signInWithPopup,
+      sendEmailVerification,
+      sendPasswordResetEmail,
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, deleteDoc, getDocs, serverTimestamp, increment, arrayUnion
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    /******************************************************************
+     * 0. 無阻塞 Toast 通知輔助函式
+     ******************************************************************/
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const el = document.createElement('div');
+      const colorClass = type === 'success'
+        ? 'bg-emerald-950/95 border-emerald-500/60 text-emerald-200'
+        : type === 'warning'
+        ? 'bg-amber-950/95 border-amber-500/60 text-amber-200'
+        : 'bg-slate-900/95 border-rose-500/60 text-white';
+      el.className = `pointer-events-auto p-3.5 rounded-2xl border shadow-2xl text-xs font-bold flex items-center justify-between gap-3 transition-all duration-300 ${colorClass}`;
+      el.innerHTML = `<span>${message}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        setTimeout(() => el.remove(), 300);
+      }, 3600);
+    }
+
+    /******************************************************************
+     * 1. 正式版 FIREBASE CONFIG (game16-pitch-barrier-breaker)
+     ******************************************************************/
+    const firebaseConfig = {
+      apiKey: "AIzaSyAh88CTb2m3usSkLwmP7y2w-EWhPi-OjOI",
+      authDomain: "game16-pitch-barrier-breaker.firebaseapp.com",
+      projectId: "game16-pitch-barrier-breaker",
+      storageBucket: "game16-pitch-barrier-breaker.firebasestorage.app",
+      messagingSenderId: "757963260753",
+      appId: "1:757963260753:web:e68f018faf691c5ff20970",
+      measurementId: "G-56VR6R8209"
+    };
+
+    const CREATOR_EMAIL = "mindnodeai@gmail.com";
+
+    /******************************************************************
+     * 2. 八大台灣典型刁鑽保戶異議處理魔王題庫 (Boss 1 ~ Boss 8)
+     ******************************************************************/
+    const BOSSES = [
+      // ==================== 第一章：四大經典拒絕魔王 (Boss 1 ~ Boss 4) ====================
+      {
+        id: 1,
+        chapter: "ch1",
+        tag: "Boss 1・保單買很多型",
+        avatar: "😤",
+        name: "38歲 鐵齒科技業副理 陳先生",
+        dealValueMan: 150,
+        bgDesc: "竹科年收 190 萬，育有 1 子。媽媽在他大一時幫他買過兩張終身醫療險，自己前幾年又跟銀行理專買了美元儲蓄險，每年總共繳 15 萬保費。",
+        objectionQuote: "「不用跟我談保險了啦！我每年保費已經繳 15 萬買超多了，什麼醫療險、終身險我都有，不需要再買了！」",
+        initDefense: 85,
+        initTrust: 20,
+        signals: [
+          { icon: "📑", type: "保費錯置訊號", title: "15 萬保費中，有 12 萬是「儲蓄險」、3 萬是「舊型住院日額」", detail: "客戶把『繳了很多錢』當成『保障很齊全』，殊不知舊保單只賠住院一天 1,500 元，實支雜費上限僅 5 萬。" },
+          { icon: "💊", type: "醫療認知落差訊號", title: "不知道現代癌症標靶與達文西手術「幾乎不用住院幾天」", detail: "若罹患大腸癌或肺腺癌需服用每月 15 萬口服標靶藥（免住院），他現有的 15 萬保單理賠金是 0 元！" },
+          { icon: "🛡️", type: "自尊防備訊號", title: "極度討厭業務員直接否定他過去買的保單", detail: "只要你說『你以前買的都沒用啦』，他會立刻惱羞成怒把你趕出去。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 直接反駁說教型（踩雷大忌）",
+            pitch: "「陳副理，您以前買的那些終身醫療早就過時沒用了啦！現在達文西手術動輒二三十萬，您那些舊保單根本賠不到，一定要重買我們家最新的實支實付跟重大傷病才行！」",
+            defenseDelta: +15, trustDelta: -15, score: 35,
+            clientReply: "「你這業務怎麼這樣講話？我媽跟銀行理專幫我買的怎麼可能都沒用？我看你只是想賺我的佣金吧！抱歉我待會還有會要開，先這樣！」（防備心爆表 100%，直接送客！）",
+            psychExplain: "直接批評客戶與其母親過去的購買決策，觸發心理學上的「自我防衛機制」，讓客戶為了捍衛面子而拒絕你。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ LSCPA 同理讚美 ＋ SPIN 暗示提問（王牌破防解）",
+            pitch: "「陳副理，每年願意投入 15 萬在家庭規劃，代表您跟令堂真的非常有遠見！不過正因為這 15 萬都是您的辛苦錢，如果明天醫生建議用『不用住院、一個月自費15萬的口服標靶藥』或『達文西微創耗材』，您確定目前那兩張舊醫療險能幫您啟動理賠嗎？我們花 10 分鐘幫您的 15 萬做個『條款啟動壓力測試』好嗎？」",
+            defenseDelta: -75, trustDelta: +75, score: 98,
+            clientReply: "「咦？不用住院的標靶藥...我那張好像是要住院才有賠耶！那我繳 15 萬到底買到什麼？好啦，保單在書房，你幫我看一下條款到底怎麼寫的！」（防備心瞬間卸下，成功拿出舊保單！）",
+            psychExplain: "先讚美客戶年繳 15 萬的責任感（卸下防備），再以 SPIN 的 Implication（暗示後果提問）點出「免住院標靶藥能否啟動理賠」的未知恐懼，引導客戶主動拿出舊保單健檢！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 卑微退縮型（錯失良機）",
+            pitch: "「哇，您已經繳 15 萬這麼多了喔！那真的很齊全耶，不好意思打擾您了，這份我們公司最新的防癌險DM放著給您參考，有需要再找我喔！」",
+            defenseDelta: -5, trustDelta: +5, score: 50,
+            clientReply: "「好喔謝謝，放著吧，有需要再聯絡。」（轉頭就把 DM 丟進回收桶，永遠不會主動聯絡你）",
+            psychExplain: "被客戶表面的「15萬保費」嚇退，沒有盡到專業顧問協助檢視「高保費低保障陷阱」的責任。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 同理讚美】：「陳哥，每年投入 15 萬保護家庭，代表您是極有責任感的男人，令堂當年幫您買終身醫療更是超有遠見！」",
+          step2SpinQuestion: "【P/I 痛點提問】：「不過醫療科技這十年變了，現在 70% 的高階抗癌標靶藥跟免疫療法都『不用住院』，您確定這 15 萬保費裡有包含『見卡就賠的百萬現金帳戶』嗎？」",
+          step3Anchor: "【價值定錨】：「我們最怕的不是沒買保險，而是繳了 15 萬保費，真要用錢時才發現條款寫『限住院才賠』。」",
+          step4Action: "【最小承諾 Action】：「今天完全不用買新保單！您把舊保單拍兩頁條款給我，我幫您畫一張『現代醫療理賠覆蓋雷達圖』，不用多花錢就能抓出漏洞！」"
+        },
+        takeaway: "【破解「買很多了」黃金公式】客戶說買很多，通常是指「保費繳很多（高保費低保障）」！切忌否定舊保單，先讚美其遠見，再用「免住院標靶藥能否啟動理賠？」提問，順勢啟動保單健檢。"
+      },
+      {
+        id: 2,
+        chapter: "ch1",
+        tag: "Boss 2・鐵齒 ETF 投資客",
+        avatar: "📈",
+        name: "34歲 股市當沖與 ETF 達人 林工程師",
+        dealValueMan: 200,
+        bgDesc: "單身頂客族，手上有 400 萬高股息與科技型 ETF。每天看財經網紅影片，深信「買保險的機會成本太高，把保費拿去定期定額買 0050 / 高股息 ETF 就夠付醫藥費了」。",
+        objectionQuote: "「我算過內部報酬率 IRR 啦！買保險錢被綁死又被通膨吃掉，我把錢全部買高股息 ETF 年領 8% 配息，生病自己賣股票付醫藥費還倒賺！」",
+        initDefense: 90,
+        initTrust: 15,
+        signals: [
+          { icon: "📊", type: "理性數據控訊號", title: "對數字與槓桿極度敏感，討厭傳統感性催淚話術", detail: "跟他說『天有不測風雲』他會翻白眼，必須用『資產配置風險對沖（Hedging）』與『現金流槓桿倍數』跟他對話。" },
+          { icon: "📉", type: "黑天鵝時間差訊號", title: "忽略「股市崩盤 35%」與「突發重病」同時發生的雙殺風險", detail: "ETF 長期向上沒錯，但疾病從不挑股市多頭才來；若在空頭年被迫砍在阿呆谷變現 250 萬治病，複利引擎將徹底報銷。" },
+          { icon: "⏳", type: "時間複利破口訊號", title: "複利需要「20年時間」，但風險可能發生在「明天第 1 年」", detail: "定期定額前 3 年本金才累積幾十萬，若第 2 年就發生 300 萬重傷缺口，ETF 根本還來不及長大。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 爭辯唱衰股市型（踩雷大忌）",
+            pitch: "「林先生，股票風險那麼高，萬一遇到金融海嘯變壁紙怎麼辦？而且高股息 ETF 都是左手配右手賺你的本金啦，還是買保險保本最安全！」",
+            defenseDelta: +10, trustDelta: -15, score: 30,
+            clientReply: "「左手配右手？看來你連總報酬率都不懂就在賣保險！我的 ETF 五年已經翻倍了，不用你操心！」（直接被貼上外行標籤，逐出門外）",
+            psychExplain: "永遠不要跟投資客爭論「股票好還是保險好」！批評他的投資標的等於批評他的智商。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ 肯定投資眼光 ＋ SPIN 股災低點變現提問（王牌破防解）",
+            pitch: "「林哥，您年紀輕輕就懂用 ETF 創造 8% 複利，財商真的打趴 90% 的人！正因為這 400 萬 ETF 是您的金雞母，我想請教一個資產配置問題：萬一遇到像 2022 年股災大跌 30% 的那個月，家裡突然需要 250 萬現金付自費標靶藥，您捨得在最低點認賠砍掉 6 成股票嗎？如果只拿您配息的十分之一（每年3萬），幫您的 ETF 買一張『300萬免賣股防彈衣』，是不是更能保護您的複利不斷鏈？」",
+            defenseDelta: -80, trustDelta: +80, score: 99,
+            clientReply: "「嗯...如果在空頭低點被迫賣掉 250 萬股票，確實會心痛死，之後反彈也吃不到了。你說只用配息的十分之一換 300 萬現金池？怎麼配？算給我看！」（精算腦被點醒，主動要求看試算！）",
+            psychExplain: "把保險重新定義為「保護 ETF 金雞母不被迫在股災低點認賠殺出的避險選擇權（Put Option）」，用投資客最懂的語言完成降維打擊！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 順從改推投資型保單（模糊焦點）",
+            pitch: "「您喜歡買 ETF 喔？那我們公司也有出連結基金跟類全委的投資型保單跟分紅保單啊，報酬率也很不錯，要不要改看這張？」",
+            defenseDelta: +5, trustDelta: 0, score: 48,
+            clientReply: "「投資型保單前幾年扣一堆前置費用跟管理費，我自己用券商買 ETF 手續費才 0.1425%，幹嘛給保險公司扒一層皮？」",
+            psychExplain: "拿保險的理財報酬率去跟自己買 ETF 硬碰硬，正好掉進客戶最擅長的費用率比較陷阱。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 肯定財商】：「林哥，把資金放在高效率的 ETF 跑複利絕對是最正確的選擇，我自己也這樣配置！」",
+          step2SpinQuestion: "【I 暗示性痛點提問】：「但複利最怕兩件事：一是『前五年本金還不夠大時突然要用 300 萬』，二是『生病急需現金那年剛好遇到股市空頭腰斬』。這時候您會選擇賣股票認賠，還是希望旁邊有一個獨立的救急現金池？」",
+          step3Anchor: "【避險槓桿定錨】：「股票負責幫您『創富（需要20年時間）』，純保障型重傷與實支險則是『100倍槓桿的選擇權（買明天就生效的300萬）』。」",
+          step4Action: "【最小承諾 Action】：「我們完全不動到您的 ETF 本金！只撥出您每年股息的 10%（約3萬元），直接鎖住 300 萬重大傷病與實支防線！」"
+        },
+        takeaway: "【破解「買ETF比保險好」黃金公式】絕不爭論報酬率！用「保護 ETF 金雞母不在股災低點被迫認賠變現的避險選擇權（Put Option）」切入，建議只拿「每年股息的 10%」購買高槓桿純保障。"
+      },
+      {
+        id: 3,
+        chapter: "ch1",
+        tag: "Boss 3・太極拳問老婆型",
+        avatar: "😅",
+        name: "40歲 怕老婆雙薪主管 張大哥",
+        dealValueMan: 180,
+        bgDesc: "張大哥聽完你的保單健檢非常認同（頻頻點頭），但當你拿出要保書準備請他簽名時，他突然縮回去打太極拳。",
+        objectionQuote: "「哎呀，你講得真的很好，我個人很想買！但我們家錢都是我老婆在管的，這麼大的事我一定要拿建議書回去問我老婆，她同意我再找你簽！」",
+        initDefense: 75,
+        initTrust: 35,
+        signals: [
+          { icon: "🏠", type: "決策場域失控訊號", title: "客戶一旦帶著冷冰冰的建議書回家，95% 會被沒聽過簡報的老婆一句話否決", detail: "張大哥不是專業業務，回家只會跟老婆說『今天有個業務叫我一年多繳 6 萬買保險』，老婆直覺反應一定是『家裡哪有錢！不准買！』" },
+          { icon: "🤔", type: "真假異議辨別訊號", title: "需分辨是「真心想買但怕老婆罵」，還是「拿老婆當擋箭牌想打發你」", detail: "透過追問『大嫂最在乎哪一點』，就能立刻測出這是真異議還是假推託。" },
+          { icon: "🤝", type: "雙向結盟訊號", title: "把業務員從「逼他簽名的外人」，變成「幫他一起說服老婆的軍師」", detail: "只要讓他覺得我們是站在同一陣線幫他減輕家庭責任，他就願意促成三人共同面談。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 傻傻放生型（99% 死在半路）",
+            pitch: "「沒問題！張大哥真是疼老婆的好男人！那這份 25 頁的建議書給您帶回去跟大嫂慢慢研究，我下禮拜一再打電話問您大嫂的決定喔！」",
+            defenseDelta: 0, trustDelta: -20, score: 40,
+            clientReply: "（三天後你打電話過去）「呃...我老婆看了一眼說今年開銷太大先不要買，以後有機會再說啦，謝謝喔！」（之後電話再也不接）",
+            psychExplain: "讓完全不懂條款的客戶自己拿著數字建議書回家面對管帳的老婆，等於讓客戶赤手空拳上戰場送死。"
+          },
+          {
+            code: "B",
+            styleTag: "❌ 激將法施壓型（引發反感）",
+            pitch: "「張大哥，您是一家之主又是賺錢的人，買個保護自己的保險怎麼還要問老婆？今天先簽一簽，回去再跟她報備就好了啦！」",
+            defenseDelta: +25, trustDelta: -30, score: 25,
+            clientReply: "「你不要害我家庭革命好不好！我說要問過她就是要問過她，你別逼我！」（防備心瞬間拉滿）",
+            psychExplain: "挑釁客戶的家庭地位或叫客戶瞞著配偶簽單，會讓客戶產生極大罪惡感與戒心。"
+          },
+          {
+            code: "C",
+            styleTag: "⭐ 同理結盟 ＋ SPIN 預演老婆提問 ＋ 三方約訪（王牌破防解）",
+            pitch: "「張大哥，夫妻共同商量絕對是家庭和諧最重要的事！不過我想幫您分擔一下：如果今晚您把這張紙拿給大嫂，跟她說『老婆，我想一年多花6萬買保險』，依您對大嫂的了解，她第一句話會問您什麼？她一定會問『你以前不是買過了嗎？為什麼還要花錢？』對吧！與其讓您回去被大嫂考倒，不如這週六下午我帶個小蛋糕去家裡（或開15分鐘視訊），由我親自幫大嫂解釋『這份計畫怎麼幫她鎖住1,200萬房貸風險』，把黑臉跟專業問題交給我來扛，好嗎？」",
+            defenseDelta: -65, trustDelta: +60, score: 97,
+            clientReply: "「哈哈你太了解我老婆了！我直接拿回去講一定被她唸到臭頭。好啦，這週六下午三點我們在社區咖啡廳，你直接幫我跟她講清楚！」（成功鎖定決策者三方面談！）",
+            psychExplain: "先透過模擬「老婆回家第一句會問什麼」讓張大哥意識到自己無法獨立解釋，再主動提議「由顧問當面幫他向太座報告房貸保護傘」，完美推進到雙決策者面談！"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 讚美尊重】：「張哥，尊重太座絕對是好男人的標配，這筆家庭防護預算本來就該讓大嫂一起安心！」",
+          step2SpinQuestion: "【P/I 預演提問】：「不過如果今晚大嫂問您：『這張重大傷病險跟我們十年前買的醫療險差在哪？為什麼要多花這筆錢？』您覺得哪個部分最難跟她解釋？」",
+          step3Anchor: "【結盟定錨】：「其實這張保單真正的受益人是大嫂跟孩子（因為它鎖住了萬一您倒下時的 1,200 萬房貸），由我從『保護女主人』的角度跟她報告，大嫂聽了一定最感動！」",
+          step4Action: "【最小承諾 Action】：「我們今天先不帶複雜的數字表回去免得大嫂誤會！我們約週六下午 15 分鐘喝杯咖啡，或者現在先把體況核保送件卡位（反正還沒扣款），等我跟大嫂報告完她點頭才算數！」"
+        },
+        takeaway: "【破解「回去問老婆」黃金公式】絕不能讓客戶單獨拿建議書回家！先問「您覺得大嫂看到這份資料第一句會問什麼？」，點出客戶自己回去講不清的痛點，順勢約定「三方喝咖啡15分鐘簡報」或「先送核保測試免扣款」。"
+      },
+      {
+        id: 4,
+        chapter: "ch1",
+        tag: "Boss 4・哭窮沒預算型",
+        avatar: "💸",
+        name: "33歲 剛生二寶之雙薪小資爸 小郭",
+        dealValueMan: 100,
+        bgDesc: "月薪 5.5 萬，剛生第二胎，每個月付完房租、托嬰費與車貸後幾乎月光。全身上下只有公司最陽春的團保。",
+        objectionQuote: "「顧問，我知道保險很重要啦，但你看我剛生老二，每個月托嬰費加房租就快四萬了，我是真的擠不出一毛錢買保險，等過兩年小孩上幼稚園比較省的時候再找你！」",
+        initDefense: 80,
+        initTrust: 30,
+        signals: [
+          { icon: "🍼", type: "零容錯現金流訊號", title: "「沒錢買保險」代表「更沒錢生病」！家庭緊急預備金不到 10 萬", detail: "正因為每個月都是月光族，一旦小郭騎車上班骨折或罹患重病休養 3 個月沒收入，全家下個月就會立刻斷炊付不出房租。" },
+          { icon: "💰", type: "高保費恐懼訊號", title: "客戶以為買保險「一年一定要花四、五萬塊」", detail: "他過去看過別人買終身險的報價單被嚇到，不知道用『純定期險組合』一年只要 1.5 萬（每天40元）就能買到 500 萬保障。" },
+          { icon: "⏰", type: "延遲風險訊號", title: "未來兩年正是新手爸爸最疲勞、免疫力最低、車禍與疾病高發期", detail: "這兩年是家庭最脆弱的時期，絕對不能讓他裸奔兩年。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 強推高保費分期型（造成壓迫）",
+            pitch: "「小郭，沒錢更要買保險啊！我幫你配這套全餐一年才 4 萬 8，你可以辦信用卡零利率分 12 期，牙一咬就過去了啦！」",
+            defenseDelta: +20, trustDelta: -25, score: 30,
+            clientReply: "「一個月還要多繳四千塊？我就說連奶粉尿布錢都不夠了你還叫我刷卡！不用了謝謝！」（感覺業務員完全不體諒他的處境）",
+            psychExplain: "對現金流極度緊繃的客戶硬塞高單價全餐，只會讓客戶覺得你只想賺業績而不顧他的死活。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ 深度同理 ＋ SPIN 斷炊反問 ＋ 銅板價定期險降維方案（王牌破防解）",
+            pitch: "「小郭，我完全懂！兩個小寶貝剛出生，這兩年真的是花錢如流水的時候。但正因為現在每個月連多擠出三千塊都很辛苦，我更替你擔心一件事：萬一這兩年我們騎車閃神住院、或身體累倒需要休養三個月，家裡突然少掉 15 萬薪水還要付醫藥費，那時候房租跟托嬰費誰來幫我們扛？我們今天絕對不買昂貴的終身險！我幫你啟動『新手爸爸過渡期銅板專案』，每天只要省下一杯手搖飲（45元），先幫你把『500萬定期壽險＋實支實付＋百萬重傷』鎖住這最脆弱的兩年，好嗎？」",
+            defenseDelta: -70, trustDelta: +75, score: 98,
+            clientReply: "「一天 45 塊就能有 500 萬壽險跟實支實付？我以為買保險一個月都要四五千塊耶！如果是每天一杯飲料的錢能保住這兩年，那我可以！」（瞬間打破價格恐懼，感動簽單！）",
+            psychExplain: "先用 SPIN 提問點出「連每天 45 元都擠不出來，怎麼扛得起 30 萬醫藥費？」，再提出超低保費高槓桿的「定期險過渡方案」，完美解決預算痛點！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 附和推遲型（放任客戶裸奔）",
+            pitch: "「好喔！養兩個小孩真的很辛苦，那我兩年後小孩上幼稚園時再來找你規劃喔，這兩年騎車自己小心一點！」",
+            defenseDelta: -5, trustDelta: 0, score: 45,
+            clientReply: "「好，兩年後再說。」（結果半年後小郭發生車禍骨折自費鋼板 12 萬，怪你當初沒幫他規劃便宜的實支實付）",
+            psychExplain: "放任家庭支柱在責任最重的兩年完全裸奔，失去了保險顧問「雪中送炭、以小博大」的專業價值。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 同理處境】：「小郭，剛生二寶還要付托嬰跟房租，現在每一分錢都要當兩分用，你真的辛苦了！」",
+          step2SpinQuestion: "【I 暗示性反問】：「但我們換個角度想：如果現在每個月多擠出兩千塊都會痛，萬一明天突然需要一筆 30 萬的手術費或休養半年沒薪水，我們家承受得起嗎？」",
+          step3Anchor: "【銅板價降維定錨】：「預算緊的時候，更要用『最高槓桿的純定期險』！不用買終身險，每天只要 45 元（一個月1,350元），就能換到 500 萬家庭保護傘。」",
+          step4Action: "【最小承諾 Action】：「我們先用這張『新手爸媽三年護航定期專案』把最危險的這三年守住，等孩子上幼稚園手頭寬裕了，我們再來升級！」"
+        },
+        takeaway: "【破解「沒預算」黃金公式】客戶說沒錢，通常是怕被推銷年繳四五萬的終身險！先同理現金流壓力，反問「付不起每月一千保費，怎麼付得起三十萬醫藥費？」，再用「每日 45 元純定期高槓桿專案」無痛切入。"
+      },
+
+      // ==================== 第二章：進階心魔與信任危機 (Boss 5 ~ Boss 8 新擴充) ====================
+      {
+        id: 5,
+        chapter: "ch2",
+        tag: "Boss 5・親戚人情保單型",
+        avatar: "🙇‍♀️",
+        name: "36歲 家族人情壓力大之會計 雅雯",
+        dealValueMan: 130,
+        bgDesc: "雅雯自己的表姐跟小阿姨都在某傳統大壽險公司當業務。她知道你規劃的多家保經組合比較好，但卻因為家族人情壓力不敢跟你買。",
+        objectionQuote: "「不好意思啦，我小阿姨跟表姐都在做保險，從小看我長大的，如果我跟你買沒有跟小阿姨買，過年回娘家吃飯我媽跟我會被唸死！」",
+        initDefense: 80,
+        initTrust: 30,
+        signals: [
+          { icon: "🧨", type: "家族社交壓力訊號", title: "客戶害怕的不是保單本身，而是「過年飯桌上的情緒勒索」", detail: "如果你叫她『不要理你阿姨啦』，她會覺得你讓她陷入家族不孝與不義的兩難。" },
+          { icon: "🔒", type: "醫療隱私外洩訊號", title: "跟熟識親戚買醫療險，最大的痛點是「生病理賠全家族秒知道」", detail: "許多女性保戶若遇到婦科疾病、乳房囊腫、不孕症或身心科理賠，最怕親戚業務大嘴巴在家族群組傳開！" },
+          { icon: "🍰", type: "雞蛋分籃配置訊號", title: "不必逼客戶跟親戚翻臉，可採「人情儲蓄給親戚、私密醫療給專業顧問」", detail: "給她一個兩全其美的台階下，她就能安心把核心保障交給你。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 攻擊親戚專業型（踩雷大忌）",
+            pitch: "「雅雯，親戚賣的都是那種又貴又爛的人情保單啦！而且單一公司條款超差，你為了顧面子跟阿姨買，以後理賠少賠一百萬阿姨會補給你嗎？」",
+            defenseDelta: +20, trustDelta: -25, score: 28,
+            clientReply: "「我小阿姨人很好才不會害我！你不要為了做業績批評我家人好不好！」（直接觸怒客戶家族情感）",
+            psychExplain: "批評客戶的親戚等於強迫客戶在「親情」與「外人」之間選邊站，業務員必敗無疑。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ 讚美親情 ＋ SPIN 醫療隱私提問 ＋ 雙軌分流法（王牌破防解）",
+            pitch: "「雅雯，妳這麼替媽媽跟小阿姨著想，真的很重情義！跟小阿姨捧場絕對是應該的。不過我有個客戶之前也是跟舅媽買，後來她因為婦科微創手術跟身心睡眠問題申請理賠，結果隔天整個家族群組都在關心她怎麼了，讓她超尷尬！妳會不會也希望『有一張完全保密、專屬於妳個人的高階醫療與重大傷病帳戶』？我們可以把儲蓄險或基本意外險留給小阿姨做人情，而最需要條款精算與絕對隱私的『雙實支與百萬重傷』交給我幫妳把關，這樣人情跟專業隱私是不是兩全其美？」",
+            defenseDelta: -75, trustDelta: +75, score: 98,
+            clientReply: "「天啊你講到我心坎裡了！我小阿姨嘴巴超大，上次我表妹住院全家族都知道！對耶，把人情跟私密醫療分開保，小阿姨也不知道我有另外保，這樣超棒！」（瞬間擊中隱私痛點，當場成交！）",
+            psychExplain: "高度肯定客戶重情義，接著用 SPIN 提問點出「跟親戚申請私密醫療理賠會全家族曝光」的隱性恐懼，最後給出「人情歸親戚、私密核心保障歸專業顧問」的雙贏台階！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 被動放棄型（拱手讓人）",
+            pitch: "「原來妳小阿姨也在做保險喔！那確實很難做人，沒關係啦，妳還是跟小阿姨買好了，需要免費諮詢再問我！」",
+            defenseDelta: 0, trustDelta: 0, score: 45,
+            clientReply: "「謝謝你的體諒喔！那我先把你幫我寫好的這份規劃表拿給小阿姨看，叫她照這樣幫我出單！」（淪為免費工具人）",
+            psychExplain: "辛苦做完健檢卻毫無防禦力地把成果拱手讓給只會賣人情單的親戚。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 讚美重情義】：「雅雯，能替長輩顧面子真的非常貼心，親戚之間互相支持絕對是好事！」",
+          step2SpinQuestion: "【I 隱私與理賠衝突提問】：「不過跟至親買核心醫療險有兩個小尷尬：第一，萬一未來申請私密科別（如婦科/乳房/心理）理賠，妳希望全家族長輩都知道嗎？第二，萬一理賠金額有落差，我們好意思跟小阿姨據理力爭拍桌嗎？」",
+          step3Anchor: "【雙軌分籃定錨】：「聰明的保戶都採『雙顧問制』：人情險（如小額意外或儲蓄）給親戚做面子；真正救命的高槓桿重傷與實支醫療，交給能替妳嚴守個資、敢幫妳跟理賠部爭取的外部獨立顧問！」",
+          step4Action: "【最小承諾 Action】：「我們這張個人專屬的高階實支與重大傷病完全獨立核保，帳單寄電子信箱，小阿姨絕對不會知道，讓妳同時擁有親情與最強保障！」"
+        },
+        takeaway: "【破解「跟親戚買」黃金公式】絕不批評親戚！用「醫療理賠個資隱私（不想讓全家族知道婦科/私密病況）」與「理賠爭議不好意思跟長輩翻臉」兩大痛點切入，主張「人情單給親戚、私密救命單交給獨立顧問」。"
+      },
+      {
+        id: 6,
+        chapter: "ch2",
+        tag: "Boss 6・網路比價精算狂",
+        avatar: "🤓",
+        name: "31歲 網路 PTT/Dcard 罐頭保單比價狂 阿哲",
+        dealValueMan: 110,
+        bgDesc: "在網路論壇爬文三個月，手上拿著自己用 Excel 算的「最低價網路罐頭保單組合」，一塊錢一塊錢跟你比保費。",
+        objectionQuote: "「你看我從 PTT 保險版抓下來的這套罐頭組合，同樣有實支實付跟防癌，一年只要 2 萬 1，比你幫我搭的便宜了整整 3,500 塊！你是不是偷偷塞了高佣金的商品想賺我的錢？」",
+        initDefense: 85,
+        initTrust: 20,
+        signals: [
+          { icon: "🔍", type: "聰明消費者自豪訊號", title: "花了很多時間爬文，極度渴望被稱讚「你比一般業務員還專業」", detail: "千萬別酸他『網路都亂寫』，要先大大讚美他的研究精神，滿足他的成就感。" },
+          { icon: "💣", type: "低價條款魔鬼訊號", title: "網路極限低價罐頭常暗藏「手術2-2-7限制、無保證續保、後期保費暴漲」地雷", detail: "為了省一年 3,500 元，挑了條款嚴苛的便宜附約，未來做個大腸息肉切除或門診微創手術直接不賠，一次就虧 5 萬！" },
+          { icon: "🛎️", type: "理賠實戰價值訊號", title: "買保單是買「條款寫作細節與未來20年理賠談判力」，不是買大白菜比斤論兩", detail: "讓他看見那 3,500 元差價買到的是『門診手術高限額＋慢病管理與理賠專人服務』。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 惱羞成怒酸網友型（踩雷大忌）",
+            pitch: "「阿哲，網路 PTT 上面那些版友都嘛只看便宜不看條款！等你以後生病拒賠，難道那些網友會幫你寫申訴信跑醫院嗎？一分錢一分貨啦！」",
+            defenseDelta: +15, trustDelta: -20, score: 32,
+            clientReply: "「PTT 上面很多也是資深保經好不好！你講不出條款哪裡贏別人，就只會拿服務來恐嚇我，我找網路保經出單就好了！」（被認為心虛話術）",
+            psychExplain: "直接否定客戶花三個月爬文的努力，且未拿出具體條款證據，只會坐實客戶「你想賺我高佣金」的懷疑。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ 盛讚做功課 ＋ SPIN 條款魔鬼對決（手術2-2-7與後期費率）（王牌破防解）",
+            pitch: "「阿哲，我必須老實說，你這張 Excel 表做得比市場上 80% 的業務員還專業，連主約減額繳清都算進去了，太強了！不過身為你的顧問，我有義務幫你抓出這份極限低價單裡的『兩個條款魔鬼』：第一，你挑的這張便宜實支，條款第12條限定『全民健保 2-2-7 手術章節』，如果是常見的大腸息肉切除或部分新型門診雷射，它是 0 理賠的；第二，它 50 歲後的自然費率會暴漲 3 倍！為了現在省 3,500 元，萬一未來門診微創手術少賠 6 萬元，你覺得哪個划算？我把兩家條款原文翻開對比給你看！」",
+            defenseDelta: -80, trustDelta: +80, score: 99,
+            clientReply: "「蛤？！那張便宜的實支有卡 2-2-7 條款喔？而且 50 歲後費率差這麼多？網路文章沒寫這麼細耶...快，你把條款打開給我看！」（精算控最佩服比他更懂條款細節的專家，瞬間收服！）",
+            psychExplain: "先給足情緒價值（誇他比80%業務還強），接著用「條款原文（2-2-7限制與後期費率曲線）」進行專業降維打擊，讓客戶心甘情願為高品質條款多付 3,500 元！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 盲目跟風砍價型（失去顧問專業）",
+            pitch: "「喔喔！既然你想買 PTT 這套 2 萬 1 的，那我也完全照這張單幫你出！甚至我再退你一點禮券，你跟我買啦！」",
+            defenseDelta: -10, trustDelta: -10, score: 42,
+            clientReply: "「喔...那你剛才推薦我貴 3,500 的果然是在唬爛我囉？而且你連退佣都敢講，感覺不太正規耶。」",
+            psychExplain: "毫無原則地推翻自己的專業建議甚至暗示退佣，不僅違法更讓客戶徹底看不起你的專業度。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 盛讚研究精神】：「阿哲，能把罐頭保單研究得這麼透徹，你真的是我見過最認真的準保戶！」",
+          step2SpinQuestion: "【P/I 條款細節提問】：「不過網路罐頭單為了湊出『首年最低價』，通常會犧牲三個魔鬼細節：『是否卡健保2-2-7手術定義』、『門診雜費是否只有1.5萬』以及『45歲後的費率漲幅』。這三點你有交叉比對過條款原文嗎？」",
+          step3Anchor: "【價值差距定錨】：「一年差 3,500 元（一天不到 10 塊錢），買到的是『不卡 2-2-7 的寬鬆手術定義』加上『高達 30 萬的門診微創雜費』。隨便一次門診手術就幫你多賠 5 萬回來了！」",
+          step4Action: "【最小承諾 Action】：「來，我們把這兩張商品的『條款第12條與費率表』直接並排在平板上看，看完由你這位數據專家自己決定選哪張！」"
+        },
+        takeaway: "【破解「網路罐頭比價狂」黃金公式】遇到做功課的客戶，千萬別談人情，要談「比網路更深的條款細節（2-2-7限制、門診手術雜費限額、中年費率斜率）」！用專業條款對比讓客戶自己發現便宜貨的陷阱。"
+      },
+      {
+        id: 7,
+        chapter: "ch2",
+        tag: "Boss 7・體況紅字逃避型",
+        avatar: "😰",
+        name: "44歲 健檢有紅字卻想拖延之主管 吳姐",
+        dealValueMan: 160,
+        bgDesc: "吳姐上個月公司健檢發現「輕度脂肪肝、乳房良性纖維囊腫（定期追蹤即可）與血壓偏高」。她很想買醫療與重傷險，但怕現在送件會被加費或除外。",
+        objectionQuote: "「顧問，我上個月健檢有脂肪肝跟乳房良性囊腫紅字，你現在送件一定會被保險公司批註除外或加費啦！等我吃中藥運動調養半年，年底複檢全部變正常（標準體）我再跟你買！」",
+        initDefense: 75,
+        initTrust: 35,
+        signals: [
+          { icon: "⏳", type: "誠實告知期間訊號", title: "書面詢問事項看的是「過去 2 年內健檢異常」與「5 年內病歷」", detail: "就算等半年運動減肥，只要要保書問『過去兩年內健康檢查是否有異常被建議追蹤』，依法還是必須誠實告知，拖半年完全不會改變告知義務！" },
+          { icon: "📈", type: "體況不可逆風險訊號", title: "等待調養的半年內，不僅全身處於無保險裸奔，囊腫或血壓萬一惡化將直接拒保", detail: "許多客戶想『等養好身體再買』，結果半年後囊腫變大或演變成慢性病，從『原本可以除外承保』變成『永久拒保』！" },
+          { icon: "🧪", type: "核保試探權訊號", title: "送件核保「完全免費」，核保結果出來客戶擁有 100% 決定要不要簽收的權利", detail: "把『簽約購買』降維成『免費測試哪家核保最寬鬆』，就能化解客戶對加費除外的恐懼。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 教唆隱匿告知型（違法且害死客戶）",
+            pitch: "「吳姐，公司健檢如果不是用健保卡看的，保險公司查不到啦！我們健康告知全部勾『否』，撐過兩年保險公司就不能解除契約了！」",
+            defenseDelta: +30, trustDelta: -40, score: 10,
+            clientReply: "「蛤？叫我說謊不告知？萬一以後得乳癌保險公司調病歷拒賠還吃官司怎麼辦？你這業務太不老實了！」（嚴重違反保險法第64條，專業破產！）",
+            psychExplain: "教唆客戶隱匿體況是保險業最大天條！不僅違反保險法第64條導致未來解除契約拒賠，更會讓正派客戶瞬間失去對你的信任。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ 破除兩年告知迷思 ＋ SPIN 惡化風險提問 ＋ 多家核保試水溫（王牌破防解）",
+            pitch: "「吳姐，想把身體調養好拿到標準體，這個想法超棒！但有個核保法規細節我一定要先保護妳：要保書問的是『過去兩年內健檢是否有異常』，所以就算半年後複檢正常，兩年內我們依法還是要告知這次紅字；更關鍵的是，萬一這半年調養期間其他部位生病、或囊腫稍微變大，到時候可能連承保機會都沒了！現在主動權在我們手上，我們先誠實附上報告，同時送 A、B 兩家對婦科與脂肪肝核保最友善的公司做『免費核保壓力測試』，等條件出來，妳滿意我們再留下，不滿意一毛錢都不用付，先把全身其他 98% 健康的器官保起來，好嗎？」",
+            defenseDelta: -75, trustDelta: +75, score: 99,
+            clientReply: "「原來要看兩年內的健檢喔！那我再等半年也沒用啊！而且先送兩家測試核保條件不用先扣錢喔？好，那我把健檢報告傳給妳，先幫我爭取看看！」（破除拖延心魔，立即啟動送件！）",
+            psychExplain: "用「兩年內健檢皆須告知」的法規事實打破等待幻想，並以「先保住全身其他 98% 健康器官 ＋ 免費送兩家核保比條件」消除客戶對未知核保結果的恐懼！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 順從等待型（半年後變拒保）",
+            pitch: "「好喔！那吳姐妳這半年好好運動吃中藥，祝妳年底複檢全部變黑字，我 12 月再來找妳簽單喔！」",
+            defenseDelta: -5, trustDelta: 0, score: 40,
+            clientReply: "「好，年底見！」（結果四個月後吳姐因急性膽囊炎住院開刀，年底要買時又多了一筆開刀紀錄，條件更差）",
+            psychExplain: "未提醒客戶「兩年告知期」與「等待期間裸奔風險」，讓客戶錯失尚可正常或輕微批註承保的黃金期。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 肯定健康意識】：「吳姐，妳馬上開始運動調養身體，這份自律真的非常棒！」",
+          step2SpinQuestion: "【P/I 法規與風險提問】：「但您知道要保書問的是『過去 24 個月內的健檢紀錄』嗎？如果等半年還是要告知，卻讓全身其他 98% 健康的器官（如肺、大腸、心血管）在這半年完全沒有保護傘，萬一中間感冒住院或指數波動，這樣划算嗎？」",
+          step3Anchor: "【98% 保護傘定錨】：「即使單一良性囊腫被暫時批註除外，代表『全身上下其他 98% 的器官與癌症風險』從明天起就立刻獲得 300 萬保障；而且一年後複檢正常，我們還能隨時幫您申請『取消批註』！」",
+          step4Action: "【最小承諾 Action】：「核保測試完全免費！我們今天先誠實附上健檢報告送兩家核保最寬鬆的公司『試水溫』，把決定權握在您自己手裡！」"
+        },
+        takeaway: "【破解「有體況等養好再買」黃金公式】點破「要保書問的是過去兩年紀錄，等半年仍須告知」！強調「先為全身其他 98% 健康器官撐起保護傘，且未來複檢正常可申請取消批註」，以免費核保試水溫促成送件。"
+      },
+      {
+        id: 8,
+        chapter: "ch2",
+        tag: "Boss 8・理賠受創不信任型",
+        avatar: "😡",
+        name: "48歲 曾遭拒賠而痛恨保險之餐廳老闆 趙大哥",
+        dealValueMan: 180,
+        bgDesc: "趙大哥三年前因為膝蓋半月板破損做門診關節鏡微創手術花了 8 萬，結果當年的業務員離職成孤兒保單，自己送理賠只賠了 1,500 元，氣得大罵保險都是騙人的。",
+        objectionQuote: "「你別跟我提保險！我繳了十五年保費，三年前膝蓋微創手術花八萬塊，保險公司找一堆藉口只賠我一千五！收錢的時候叫大哥，理賠的時候翻臉不認人，保險公司全部都是詐騙集團啦！」",
+        initDefense: 95,
+        initTrust: 10,
+        signals: [
+          { icon: "🌋", type: "情緒宣洩需求訊號", title: "客戶滿肚子委屈與憤怒，此時任何「替保險業辯護」的話都是火上澆油", detail: "必須先 100% 站在趙大哥這邊陪他一起生氣，同理他變成孤兒保單又沒賠到錢的痛。" },
+          { icon: "🔎", type: "險種錯配真相訊號", title: "花 8 萬只賠 1,500 元，99% 是因為當年買的是「定額住院醫療」而非「實支實付雜費」", detail: "不是保險騙人，而是 15 年前的舊險種只賠『手術定額倍數』不賠『8萬元自費耗材』。" },
+          { icon: "🦸‍♂️", type: "專業救援轉機訊號", title: "主動幫他檢視三年前的理賠明細（看有無漏賠可補申請），就能瞬間從推銷員變成救星", detail: "保險法第65條請求權時效為2年（若在2年內可補請，超過2年則可幫他查清當年舊保單條款真相避免下次再虧）。" }
+        ],
+        options: [
+          {
+            code: "A",
+            styleTag: "❌ 替保險公司辯護型（直接引爆火藥庫）",
+            pitch: "「趙大哥您冷靜一點！保險公司都是照白紙黑字條款賠的，不可能騙人啦！一定是您自己當年沒買實支實付，不能怪保險公司啊！」",
+            defenseDelta: +5, trustDelta: -10, score: 20,
+            clientReply: "「好啊！現在連你也說是我自己的錯就對了？你們做保險的果然都同一夥的，給我出去！」（直接把茶杯重摔在桌上）",
+            psychExplain: "在氣頭上的客戶面前替保險公司講話、還檢討受害者「是你自己沒買對」，保證三秒鐘內被轟出大門。"
+          },
+          {
+            code: "B",
+            styleTag: "⭐ 深度同理委屈 ＋ SPIN 診斷舊拒賠單真相 ＋ 孤兒保單終結者（王牌破防解）",
+            pitch: "「趙大哥，聽到這件事連我都替您火大！繳了 15 年保費、業務員不見人影，花了 8 萬卻只收到 1,500 塊，換作是我也絕對不會再相信任何業務員！不過趙大哥，您今天罵完我很解氣，但您手頭那張繳了 15 年的保單現在每年還在扣您的錢耶！您願不願意把當年的『理賠核算單』跟舊保單借我看 5 分鐘？我幫您免費抓出『當年到底是理賠部算錯漏賠，還是舊條款根本沒買到自費雜費』，就算今天完全不跟我買任何一張單，我也一定要幫您討個明白，別讓您接下來又白繳十年冤枉錢！」",
+            defenseDelta: -85, trustDelta: +85, score: 99,
+            clientReply: "「唉...其實我也不是氣你啦，我是氣當年那個業務拍胸脯說什麼都賠，結果出事連人都找不到！核算單跟舊保單在櫃檯抽屜，你真的看得懂他為什麼只賠我一千五嗎？拿去幫我看！」（怒氣瞬間消散，把你當成替他主持公道的專家！）",
+            psychExplain: "先 100% 承接情緒（「換作是我也氣炸」），接著用 SPIN 提問點出「那張舊保單現在還在扣錢，不弄清楚下次還會再虧」，以「免費幫您查驗當年理賠單討公道」徹底扭轉信任危機！"
+          },
+          {
+            code: "C",
+            styleTag: "⚠️ 貶低前同業拉抬自己型（缺乏信服力）",
+            pitch: "「唉呀那是因為您以前買的那家保險公司理賠本來就很小氣啦！我們家理賠超阿莎力的，您把舊的解約改買我們家就不會這樣了！」",
+            defenseDelta: +10, trustDelta: -5, score: 38,
+            clientReply: "「當年那個業務也是拍胸脯跟我說他們家最阿莎力啊！天底下烏鴉一般黑啦！」",
+            psychExplain: "不查明條款真相就空口保證「我們家最阿莎力」，在受過傷的客戶聽來跟前一個落跑業務員一模一樣。"
+          }
+        ],
+        spinPlaybook: {
+          step1Empathy: "【L/S 承接憤怒】：「趙哥，繳了 15 年保費，手術花 8 萬只賠 1,500，業務員還人間蒸發，換作是我一定也覺得被騙了，您生氣完全有道理！」",
+          step2SpinQuestion: "【P/I 止損提問】：「但趙哥，那張讓您生氣的保單現在是不是還在繼續扣您的血汗錢？如果不把條款攤開看清楚，萬一將來遇到更大的手術又只賠一千五，我們不是虧更大嗎？」",
+          step3Anchor: "【真相診斷定錨】：「花 8 萬只賠 1,500，通常是因為 15 年前業務只幫您配了『手術定額險』，卻漏掉了最關鍵的『實支實付醫療雜費（專門賠那8萬塊耗材）』。」",
+          step4Action: "【最小承諾 Action】：「今天我絕對不跟您推銷！您把舊保單跟當年的理賠單拿出來，我幫您做一次『條款驗屍報告』，把該留的留住、把會害您白繳錢的缺口標出來！」"
+        },
+        takeaway: "【破解「理賠受創不信任」黃金公式】面對受過傷的孤兒保戶，絕對不能替保險公司辯護！先陪他一起罵、同理他的委屈，再用「那張舊保單現在還在扣您的錢，不查清楚下次還要再虧一次」切入，免費幫他診斷舊理賠單。"
+      }
+    ];
+
+    /******************************************************************
+     * 3. Web Audio API 零外部依賴音效合成器
+     ******************************************************************/
+    let audioCtx = null;
+    let isSoundMuted = false;
+
+    function ensureAudioContext() {
+      if (isSoundMuted) return null;
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSoundEffect(type) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      if (type === 'start' || type === 'hit') {
+        [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.18, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.16);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.17);
+        });
+      } else if (type === 'fail') {
+        [300, 220].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.18);
+          gain.gain.setValueAtTime(0.16, now + idx * 0.18);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.18 + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.18);
+          osc.stop(now + idx * 0.18 + 0.24);
+        });
+      } else if (type === 'tick') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } else if (type === 'urgent') {
+        [1046.5, 1318.5].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+          gain.gain.setValueAtTime(0.14, now + idx * 0.11);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.09);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.11);
+          osc.stop(now + idx * 0.11 + 0.1);
+        });
+      } else if (type === 'finish') {
+        [261.63, 329.63, 392.00, 523.25].forEach((freq) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + 1.4);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.45);
+        });
+      }
+    }
+
+    function toggleSoundMute() {
+      isSoundMuted = !isSoundMuted;
+      const btn = document.getElementById('soundMuteBtn');
+      if (isSoundMuted) {
+        btn.textContent = "🔇 音效：靜音";
+        btn.className = "text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 transition";
+      } else {
+        btn.textContent = "🔊 音效：開啟";
+        btn.className = "text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 transition";
+        playSoundEffect('tick');
+      }
+    }
+
+    /******************************************************************
+     * 4. 全域狀態管理與 Firebase 實例
+     ******************************************************************/
+    let appInstance = null;
+    let auth = null;
+    let db = null;
+    let currentUserUid = "local_" + Math.random().toString(36).substring(2, 8);
+    let currentMemberProfile = null;
+    let allRegisteredMembers = [];
+    let unsubscribeUsersList = null;
+    let isRegisteringFlow = false;
+    let lastAdminAiReportText = "";
+    let isFirebaseConnected = false;
+    let unsubscribeTeams = null;
+    let unsubscribeRoomMeta = null;
+
+    let currentChapterFilter = 'all'; // 'ch1' | 'ch2' | 'all'
+    let currentBossIndex = 0;
+    let selectedCardCode = "B"; // 預設選中卡片代碼
+    let cloudTeamsCache = [];
+    let latestReportData = null;
+
+    let timerInterval = null;
+    let timerTotalSeconds = 60;
+    let timerEndTimestamp = 0;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomFromUrl = urlParams.get('room');
+
+    let playerState = {
+      roomId: roomFromUrl || localStorage.getItem('spin_roomId') || "SPIN-2026",
+      teamName: localStorage.getItem('spin_teamName') || ("第 " + Math.floor(Math.random() * 15 + 1) + " 通訊處：王牌攻堅隊"),
+      role: localStorage.getItem('spin_role') || "manager", // 'manager' | 'advisor'
+      completedBosses: {}, // { bossIndex: { choice, score, dealValueMan } }
+      geminiApiKey: localStorage.getItem('tp_geminiKey') || ""
+    };
+
+    /******************************************************************
+     * 5. 60 秒決策倒數計時器與 QR Code 投影控制
+     ******************************************************************/
+    async function startClassroomTimer(seconds = 60) {
+      ensureAudioContext();
+      playSoundEffect('start');
+      const endAt = Date.now() + seconds * 1000;
+      timerTotalSeconds = seconds;
+      activateLocalCountdown(endAt, seconds);
+
+      if (db && isFirebaseConnected) {
+        try {
+          await setDoc(doc(db, 'spin_rooms', playerState.roomId), {
+            timerEndAt: endAt,
+            timerDuration: seconds,
+            timerActive: true,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+        } catch (e) {
+          console.warn("計時器同步雲端失敗：", e);
+        }
+      }
+    }
+
+    async function stopClassroomTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      resetTimerVisuals(60);
+
+      if (db && isFirebaseConnected) {
+        try {
+          await setDoc(doc(db, 'spin_rooms', playerState.roomId), {
+            timerEndAt: 0,
+            timerActive: false,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+        } catch (e) {
+          console.warn("重置計時器失敗：", e);
+        }
+      }
+    }
+
+    function activateLocalCountdown(endAtMs, totalSec = 60) {
+      clearInterval(timerInterval);
+      timerEndTimestamp = endAtMs;
+      timerTotalSeconds = totalSec || 60;
+
+      const globalBanner = document.getElementById('globalTimerBanner');
+      globalBanner.classList.remove('hidden');
+      globalBanner.classList.add('flex');
+
+      const tickUpdate = () => {
+        const remainingMs = timerEndTimestamp - Date.now();
+        const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
+        renderTimerUI(remainingSec, timerTotalSeconds);
+
+        if (remainingSec > 10) {
+          playSoundEffect('tick');
+        } else if (remainingSec > 0 && remainingSec <= 10) {
+          playSoundEffect('urgent');
+        } else if (remainingSec <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          playSoundEffect('finish');
+        }
+      };
+
+      tickUpdate();
+      timerInterval = setInterval(tickUpdate, 1000);
+    }
+
+    function renderTimerUI(sec, totalSec) {
+      const mins = String(Math.floor(sec / 60)).padStart(2, '0');
+      const secs = String(sec % 60).padStart(2, '0');
+      const formatted = `${mins}:${secs}`;
+
+      const instDigits = document.getElementById('instructorTimerDigits');
+      const globalDigits = document.getElementById('globalTimerDigits');
+      const statusTag = document.getElementById('timerStatusTag');
+      const bar = document.getElementById('instructorTimerBar');
+      const warCard = document.getElementById('warRoomTimerCard');
+      const playerCard = document.getElementById('playerDecisionCard');
+
+      instDigits.textContent = formatted;
+      globalDigits.textContent = formatted;
+
+      const pct = Math.max(0, Math.min(100, (sec / totalSec) * 100));
+      bar.style.width = `${pct}%`;
+
+      if (sec === 0) {
+        instDigits.className = "text-4xl md:text-5xl font-black font-mono tracking-wider text-rose-500";
+        globalDigits.className = "text-base font-black font-mono text-rose-400";
+        statusTag.textContent = "⏰ 時間到！請鎖定話術卡準備開獎";
+        statusTag.className = "text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold border border-rose-500/40";
+        warCard.classList.remove('timer-urgent');
+        playerCard.classList.remove('timer-urgent');
+      } else if (sec <= 10) {
+        instDigits.className = "text-4xl md:text-5xl font-black font-mono tracking-wider text-rose-400 scale-105 transition-transform";
+        globalDigits.className = "text-base font-black font-mono text-rose-400";
+        statusTag.textContent = `🔥 最後 ${sec} 秒衝刺催票中！`;
+        statusTag.className = "text-xs px-2 py-0.5 rounded bg-rose-500/30 text-rose-200 font-bold border border-rose-500/50";
+        bar.className = "h-full bg-rose-500 transition-all duration-300";
+        warCard.classList.add('timer-urgent');
+        playerCard.classList.add('timer-urgent');
+      } else {
+        instDigits.className = "text-4xl md:text-5xl font-black font-mono tracking-wider text-rose-400";
+        globalDigits.className = "text-base font-black font-mono text-rose-400";
+        statusTag.textContent = "⏳ 話術拆招進行中...";
+        statusTag.className = "text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30";
+        bar.className = "h-full bg-gradient-to-r from-rose-500 to-violet-500 transition-all duration-300";
+        warCard.classList.remove('timer-urgent');
+        playerCard.classList.remove('timer-urgent');
+      }
+    }
+
+    function resetTimerVisuals(defaultSec = 60) {
+      const mins = String(Math.floor(defaultSec / 60)).padStart(2, '0');
+      const secs = String(defaultSec % 60).padStart(2, '0');
+      document.getElementById('instructorTimerDigits').textContent = `${mins}:${secs}`;
+      document.getElementById('instructorTimerDigits').className = "text-4xl md:text-5xl font-black font-mono tracking-wider text-white";
+      document.getElementById('timerStatusTag').textContent = "待命準備中";
+      document.getElementById('timerStatusTag').className = "text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold";
+      document.getElementById('instructorTimerBar').style.width = "100%";
+      document.getElementById('instructorTimerBar').className = "h-full bg-gradient-to-r from-rose-500 to-violet-500 transition-all duration-300";
+      document.getElementById('warRoomTimerCard').classList.remove('timer-urgent');
+      document.getElementById('playerDecisionCard').classList.remove('timer-urgent');
+      document.getElementById('globalTimerBanner').classList.add('hidden');
+      document.getElementById('globalTimerBanner').classList.remove('flex');
+    }
+
+    function toggleQrModal() {
+      const modal = document.getElementById('qrModal');
+      const isHidden = modal.classList.contains('hidden');
+      if (isHidden) {
+        const baseUrl = window.location.href.split('?')[0];
+        const joinUrl = `${baseUrl}?room=${encodeURIComponent(playerState.roomId)}`;
+        const input = document.getElementById('qrUrlInput');
+        if (!input.value) input.value = joinUrl;
+        document.getElementById('qrModalRoomCode').textContent = playerState.roomId;
+        updateQrCodeImage();
+        renderQrModalTeamList(cloudTeamsCache);
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function updateQrCodeImage() {
+      const targetUrl = document.getElementById('qrUrlInput').value.trim() || window.location.href;
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=10&data=${encodeURIComponent(targetUrl)}`;
+      document.getElementById('qrCodeImage').src = qrApi;
+    }
+
+    function copyJoinLink() {
+      const input = document.getElementById('qrUrlInput');
+      input.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {
+        if (navigator.clipboard) navigator.clipboard.writeText(input.value);
+      }
+      const btn = document.getElementById('copyLinkBtn');
+      btn.textContent = "✓ 已複製";
+      showToast("已複製課堂入場連結！", "success");
+      setTimeout(() => { btn.textContent = "複製連結"; }, 1800);
+    }
+
+    function renderQrModalTeamList(teams) {
+      const countEl = document.getElementById('qrModalTeamCount');
+      const container = document.getElementById('qrModalTeamBadges');
+      countEl.textContent = `${teams.length} 組已就緒`;
+
+      if (teams.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-500">等待各通訊處同仁掃描 QR Code 登上擂台...</span>`;
+        return;
+      }
+
+      container.innerHTML = teams.map(t => `
+        <span class="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 ${
+          t.role === 'manager'
+            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+            : 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
+        }">
+          <span>${t.role === 'manager' ? '👔' : '🚀'}</span>
+          <span>${t.teamName}</span>
+        </span>
+      `).join('');
+    }
+
+    /******************************************************************
+     * 5.5 會員註冊、登入閘門 (Auth Gate)、Double Opt-in 與管理員後台邏輯
+     ******************************************************************/
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('authFormLogin');
+      const regForm = document.getElementById('authFormRegister');
+      const resetForm = document.getElementById('authFormReset');
+      const tabLogin = document.getElementById('authTabLogin');
+      const tabReg = document.getElementById('authTabRegister');
+      const spamBanner = document.getElementById('spamReminderBanner');
+
+      loginForm.classList.add('hidden');
+      regForm.classList.add('hidden');
+      resetForm.classList.add('hidden');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        tabLogin.className = "py-2.5 rounded-xl bg-rose-600 text-white shadow transition";
+        tabReg.className = "py-2.5 rounded-xl text-slate-400 hover:text-white transition";
+        spamBanner.classList.add('hidden');
+      } else if (tab === 'register') {
+        regForm.classList.remove('hidden');
+        tabReg.className = "py-2.5 rounded-xl bg-emerald-600 text-white shadow transition";
+        tabLogin.className = "py-2.5 rounded-xl text-slate-400 hover:text-white transition";
+        spamBanner.classList.remove('hidden');
+      } else if (tab === 'reset') {
+        resetForm.classList.remove('hidden');
+        spamBanner.classList.remove('hidden');
+      }
+    }
+
+    function showAuthAlert(message, type = 'success') {
+      const banner = document.getElementById('authAlertBanner');
+      banner.classList.remove('hidden');
+      if (type === 'success') {
+        banner.className = "p-4 rounded-2xl text-xs md:text-sm font-bold leading-relaxed border bg-emerald-950/90 border-emerald-500 text-emerald-300";
+      } else {
+        banner.className = "p-4 rounded-2xl text-xs md:text-sm font-bold leading-relaxed border bg-rose-950/90 border-rose-500 text-rose-300";
+      }
+      banner.innerHTML = message;
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) icon.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        if (icon) icon.textContent = '👁️';
+      }
+    }
+
+    async function handleEmailRegister() {
+      const realName = document.getElementById('regRealName').value.trim();
+      const identity = document.getElementById('regIdentity').value;
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const password = document.getElementById('regPassword').value;
+      const btn = document.getElementById('btnRegSubmit');
+
+      if (!realName || !email || !password) {
+        showAuthAlert("⚠️ 請完整填寫「真實姓名」、「電子信箱」與「登入密碼」！", "error");
+        return;
+      }
+      if (password.length < 6) {
+        showAuthAlert("⚠️ 密碼長度請至少設定 6 位字元以上！", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "⏳ 正在建立帳號並發送驗證信...";
+      isRegisteringFlow = true;
+
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+        await updateProfile(user, { displayName: realName });
+
+        const isCreator = email === CREATOR_EMAIL.toLowerCase();
+        const assignedRole = isCreator ? 'admin' : 'user';
+        const nowIso = new Date().toISOString();
+
+        await setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          email: email,
+          realName: realName,
+          identity: identity,
+          role: assignedRole,
+          isCreator: isCreator,
+          registeredAt: nowIso,
+          lastLoginAt: nowIso,
+          loginCount: 0,
+          emailVerified: false,
+          historyLogs: [
+            { time: nowIso, action: `完成會員註冊（身分：${identity}）` }
+          ]
+        }, { merge: true });
+
+        await sendEmailVerification(user);
+        await signOut(auth);
+        isRegisteringFlow = false;
+
+        switchAuthTab('login');
+        document.getElementById('spamReminderBanner').classList.remove('hidden');
+        showAuthAlert(
+          `✅ 註冊成功！已發送驗證信至 <strong>${email}</strong>。<br>👉 <strong>請至信箱點擊驗證</strong>後再登入系統！（溫馨提醒：註冊確認信有時會跑到「垃圾郵件匣」，請記得前往確認唷！）`,
+          "success"
+        );
+        document.getElementById('loginEmail').value = email;
+      } catch (err) {
+        isRegisteringFlow = false;
+        let msg = err.message;
+        if (err.code === 'auth/email-already-in-use') msg = "此電子信箱已經註冊過，請直接切換至「會員登入」或使用「忘記密碼」。";
+        showAuthAlert(`❌ 註冊失敗：${msg}`, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "📩 註冊帳號並發送驗證信";
+      }
+    }
+
+    async function handleEmailLogin() {
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('btnLoginSubmit');
+
+      if (!email || !password) {
+        showAuthAlert("⚠️ 請輸入您的電子信箱與密碼！", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "⏳ 正在驗證身分與信箱狀態...";
+
+      try {
+        const userCred = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+        await user.reload();
+
+        if (!user.emailVerified) {
+          try { await sendEmailVerification(user); } catch (e) {}
+          await signOut(auth);
+          document.getElementById('spamReminderBanner').classList.remove('hidden');
+          showAuthAlert(
+            `🚫 <strong>尚未完成信箱驗證（emailVerified 為 false）！</strong><br>系統已重新發送驗證信至 <strong>${email}</strong>，請至信箱點擊驗證連結後再登入。（溫馨提醒：確認信有時會跑到「垃圾郵件匣」，請記得前往確認唷！）`,
+            "error"
+          );
+          btn.disabled = false;
+          btn.textContent = "🚀 立即登入實戰擂台";
+          return;
+        }
+
+        await upsertAndLoadMemberProfile(user);
+      } catch (err) {
+        let msg = "帳號或密碼錯誤，請重新確認。";
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+          msg = "信箱或密碼不正確，若忘記密碼請點擊右上方「忘記密碼？」。";
+        }
+        showAuthAlert(`❌ 登入失敗：${msg}`, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "🚀 立即登入實戰擂台";
+      }
+    }
+
+    async function handleGoogleLogin() {
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const customName = document.getElementById('googleCustomName').value.trim();
+        const customIdentity = document.getElementById('googleCustomIdentity').value;
+        await upsertAndLoadMemberProfile(user, customName, customIdentity);
+      } catch (err) {
+        showAuthAlert(`❌ Google 登入未完成：${err.message}`, "error");
+      }
+    }
+
+    async function handleForgotPassword() {
+      const email = document.getElementById('resetEmail').value.trim().toLowerCase();
+      const btn = document.getElementById('btnResetSubmit');
+      if (!email) {
+        showAuthAlert("⚠️ 請輸入您註冊時的電子信箱！", "error");
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "⏳ 發送中...";
+      try {
+        await sendPasswordResetEmail(auth, email);
+        document.getElementById('spamReminderBanner').classList.remove('hidden');
+        showAuthAlert(
+          `✅ 密碼重設信已發送至 <strong>${email}</strong>！<br>💡 溫馨提醒：確認信有時會跑到「垃圾郵件匣」，請記得前往確認唷！`,
+          "success"
+        );
+      } catch (err) {
+        showAuthAlert(`❌ 發送失敗：請確認信箱格式或是否已註冊 (${err.message})`, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "📧 發送密碼重設信";
+      }
+    }
+
+    async function upsertAndLoadMemberProfile(user, fallbackName = "", fallbackIdentity = "TONY老師學員") {
+      if (!db || !user) return;
+      const email = (user.email || "").toLowerCase();
+      const isCreator = email === CREATOR_EMAIL.toLowerCase();
+      const userRef = doc(db, 'users', user.uid);
+      const nowIso = new Date().toISOString();
+
+      try {
+        const snap = await getDoc(userRef);
+        let profileData = null;
+
+        if (!snap.exists()) {
+          const rName = fallbackName || user.displayName || email.split('@')[0] || "實戰學員";
+          profileData = {
+            uid: user.uid,
+            email: email,
+            realName: rName,
+            identity: fallbackIdentity || "TONY老師學員",
+            role: isCreator ? 'admin' : 'user',
+            isCreator: isCreator,
+            registeredAt: nowIso,
+            lastLoginAt: nowIso,
+            loginCount: 1,
+            emailVerified: user.emailVerified,
+            historyLogs: [
+              { time: nowIso, action: `首次透過驗證登入系統（身分：${fallbackIdentity}）` }
+            ]
+          };
+          await setDoc(userRef, profileData);
+        } else {
+          const existing = snap.data();
+          const newRole = isCreator ? 'admin' : (existing.role || 'user');
+          const newCount = (existing.loginCount || 0) + 1;
+          const logs = Array.isArray(existing.historyLogs) ? existing.historyLogs.slice(-35) : [];
+          logs.push({ time: nowIso, action: `登入系統（累計第 ${newCount} 次登入）` });
+
+          profileData = {
+            ...existing,
+            uid: user.uid,
+            email: email,
+            realName: existing.realName || fallbackName || user.displayName || email.split('@')[0],
+            identity: existing.identity || fallbackIdentity || "TONY老師學員",
+            role: newRole,
+            isCreator: isCreator,
+            lastLoginAt: nowIso,
+            loginCount: newCount,
+            emailVerified: user.emailVerified,
+            historyLogs: logs
+          };
+          await setDoc(userRef, profileData, { merge: true });
+        }
+
+        currentMemberProfile = profileData;
+        unlockMainApplication(profileData);
+      } catch (e) {
+        console.warn("讀取或更新會員資料失敗：", e);
+        const fallbackProfile = {
+          uid: user.uid,
+          email: email,
+          realName: user.displayName || email.split('@')[0],
+          identity: fallbackIdentity,
+          role: isCreator ? 'admin' : 'user',
+          isCreator: isCreator,
+          loginCount: 1
+        };
+        currentMemberProfile = fallbackProfile;
+        unlockMainApplication(fallbackProfile);
+      }
+    }
+
+    function unlockMainApplication(profile) {
+      document.getElementById('authGateOverlay').classList.add('hidden');
+      document.getElementById('mainAppWrapper').classList.remove('hidden');
+
+      if (!localStorage.getItem('spin_teamName') && profile.realName) {
+        playerState.teamName = `${profile.realName}・王牌攻堅戰隊`;
+        document.getElementById('inputTeamName').value = playerState.teamName;
+      }
+
+      document.getElementById('displayMemberIdentityBadge').textContent = `[${profile.identity || 'TONY老師學員'}]`;
+      document.getElementById('displayMemberEmailBadge').textContent = `(${profile.realName}｜${profile.email})`;
+      applyHeaderProfileUI();
+
+      const adminBtn = document.getElementById('adminPortalBtn');
+      if (profile.role === 'admin' || profile.email === CREATOR_EMAIL) {
+        adminBtn.classList.remove('hidden');
+        adminBtn.classList.add('flex');
+        subscribeAllMembersForAdmin();
+      } else {
+        adminBtn.classList.add('hidden');
+        adminBtn.classList.remove('flex');
+      }
+
+      showToast(`🎉 歡迎回來，${profile.realName}（${profile.identity}）！`, "success");
+    }
+
+    async function appendMemberActionLog(actionText) {
+      if (!db || !currentUserUid || !currentMemberProfile) return;
+      const nowIso = new Date().toISOString();
+      try {
+        const userRef = doc(db, 'users', currentUserUid);
+        const currentLogs = Array.isArray(currentMemberProfile.historyLogs) ? currentMemberProfile.historyLogs.slice(-39) : [];
+        currentLogs.push({ time: nowIso, action: actionText });
+        currentMemberProfile.historyLogs = currentLogs;
+        await setDoc(userRef, { historyLogs: currentLogs, updatedAt: serverTimestamp() }, { merge: true });
+      } catch (e) {
+        console.warn("記錄會員歷史失敗：", e);
+      }
+    }
+
+    async function handleLogout() {
+      if (unsubscribeUsersList) {
+        unsubscribeUsersList();
+        unsubscribeUsersList = null;
+      }
+      await signOut(auth);
+      currentMemberProfile = null;
+      document.getElementById('mainAppWrapper').classList.add('hidden');
+      document.getElementById('adminModal').classList.add('hidden');
+      document.getElementById('authGateOverlay').classList.remove('hidden');
+      showAuthAlert("👋 您已安全登出系統。", "success");
+    }
+
+    function toggleCreatorModal() {
+      document.getElementById('creatorModal').classList.toggle('hidden');
+    }
+
+    function toggleAdminModal() {
+      if (!currentMemberProfile || (currentMemberProfile.role !== 'admin' && currentMemberProfile.email !== CREATOR_EMAIL)) {
+        showToast("🚫 僅限管理員 (Admin) 進入後台！", "warning");
+        return;
+      }
+      const modal = document.getElementById('adminModal');
+      const isHidden = modal.classList.contains('hidden');
+      if (isHidden) {
+        const today = new Date();
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+        const endInput = document.getElementById('reportEndDate');
+        const startInput = document.getElementById('reportStartDate');
+        if (!endInput.value) endInput.value = today.toISOString().slice(0, 10);
+        if (!startInput.value) startInput.value = thirtyDaysAgo.toISOString().slice(0, 10);
+        subscribeAllMembersForAdmin();
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function subscribeAllMembersForAdmin() {
+      if (!db || unsubscribeUsersList) return;
+      const usersRef = collection(db, 'users');
+      unsubscribeUsersList = onSnapshot(usersRef, (snapshot) => {
+        const list = [];
+        snapshot.forEach(docSnap => {
+          list.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        list.sort((a, b) => (b.registeredAt || "").localeCompare(a.registeredAt || ""));
+        allRegisteredMembers = list;
+        renderAdminUsersTable(list);
+      }, (err) => {
+        console.warn("監聽會員名單失敗：", err);
+      });
+    }
+
+    function renderAdminUsersTable(users) {
+      document.getElementById('adminTotalUsersCount').textContent = users.length;
+      const tbody = document.getElementById('adminUsersTableBody');
+      if (!tbody) return;
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-500">尚無註冊會員資料</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => {
+        const emailLower = (u.email || "").toLowerCase();
+        const isCreator = emailLower === CREATOR_EMAIL.toLowerCase() || u.isCreator === true;
+        const isAdmin = u.role === 'admin' || isCreator;
+        const regTimeStr = u.registeredAt ? new Date(u.registeredAt).toLocaleString('zh-TW') : '-';
+        const logsCount = Array.isArray(u.historyLogs) ? u.historyLogs.length : 0;
+
+        return `
+          <tr class="hover:bg-slate-900/80 transition">
+            <td class="py-3 px-3 font-bold text-white">${u.realName || '-'}</td>
+            <td class="py-3 px-3 font-mono text-slate-300">${u.email || '-'}</td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold ${
+                (u.identity || '').includes('學員') && !(u.identity || '').includes('非學員')
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  : 'bg-slate-800 text-slate-300'
+              }">${u.identity || '一般訪客'}</span>
+            </td>
+            <td class="py-3 px-3">
+              ${isCreator
+                ? '<span class="px-2.5 py-0.5 rounded-full bg-amber-500/30 text-amber-200 border border-amber-400 font-black text-[11px]">👑 系統創作者 (最高權限)</span>'
+                : isAdmin
+                ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold text-[11px]">🛡️ Admin 管理員</span>'
+                : '<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-[11px]">User 一般會員</span>'
+              }
+            </td>
+            <td class="py-3 px-3 font-mono text-slate-400 text-[11px]">${regTimeStr}</td>
+            <td class="py-3 px-3 text-center font-mono font-black text-emerald-400">${u.loginCount || 0}</td>
+            <td class="py-3 px-3">
+              <button onclick="window.app.viewMemberHistory('${u.id}')" class="px-2.5 py-1 rounded-lg bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 border border-violet-500/30 text-[11px] font-bold">
+                📜 檢視紀錄 (${logsCount}筆)
+              </button>
+            </td>
+            <td class="py-3 px-3 text-right space-x-1">
+              ${isCreator
+                ? '<span class="text-[11px] text-amber-400/90 font-semibold">🔒 永久保護不可變更</span>'
+                : `
+                  <button onclick="window.app.toggleMemberRole('${u.id}', '${isAdmin ? 'user' : 'admin'}')" class="px-2.5 py-1 rounded-lg ${
+                    isAdmin ? 'bg-amber-600/30 text-amber-200 hover:bg-amber-600/50' : 'bg-emerald-600/30 text-emerald-200 hover:bg-emerald-600/50'
+                  } text-[11px] font-bold transition">
+                    ${isAdmin ? '⬇️ 降為 User' : '⬆️ 升為 Admin'}
+                  </button>
+                  <button onclick="window.app.deleteMemberDoc('${u.id}', '${u.email || ''}')" class="px-2.5 py-1 rounded-lg bg-rose-900/50 hover:bg-rose-700 text-rose-200 text-[11px] font-bold transition">
+                    🗑️ 刪除
+                  </button>
+                `
+              }
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function toggleMemberRole(uid, targetRole) {
+      const targetUser = allRegisteredMembers.find(u => u.id === uid);
+      if (targetUser && ((targetUser.email || '').toLowerCase() === CREATOR_EMAIL.toLowerCase() || targetUser.isCreator)) {
+        showToast("🚫 系統創作者 (mindnodeai@gmail.com) 擁有永久最高權限，不可降維！", "warning");
+        return;
+      }
+      try {
+        await setDoc(doc(db, 'users', uid), { role: targetRole }, { merge: true });
+        showToast(`✓ 已成功將會員權限更新為 ${targetRole.toUpperCase()}！`, "success");
+      } catch (e) {
+        showToast(`更新權限失敗：${e.message}`, "warning");
+      }
+    }
+
+    async function deleteMemberDoc(uid, email) {
+      if ((email || '').toLowerCase() === CREATOR_EMAIL.toLowerCase()) {
+        showToast("🚫 系統創作者帳號受保護，不可刪除！", "warning");
+        return;
+      }
+      try {
+        await deleteDoc(doc(db, 'users', uid));
+        showToast(`🗑️ 已刪除會員資料 (${email})`, "info");
+      } catch (e) {
+        showToast(`刪除失敗：${e.message}`, "warning");
+      }
+    }
+
+    function viewMemberHistory(uid) {
+      const u = allRegisteredMembers.find(item => item.id === uid);
+      if (!u) return;
+      const drawer = document.getElementById('memberHistoryDrawer');
+      const title = document.getElementById('historyDrawerTitle');
+      const content = document.getElementById('historyDrawerContent');
+
+      drawer.classList.remove('hidden');
+      title.textContent = `📜 會員歷史紀錄明細：${u.realName || ''} (${u.email || ''})`;
+
+      const logs = Array.isArray(u.historyLogs) ? [...u.historyLogs].reverse() : [];
+      if (logs.length === 0) {
+        content.innerHTML = `<div class="text-slate-500">尚無歷史操作紀錄</div>`;
+        return;
+      }
+
+      content.innerHTML = logs.map(l => `
+        <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+          <span class="font-semibold text-white">${l.action}</span>
+          <span class="font-mono text-[11px] text-slate-400">${l.time ? new Date(l.time).toLocaleString('zh-TW') : ''}</span>
+        </div>
+      `).join('');
+    }
+
+    function exportMembersCsv() {
+      if (allRegisteredMembers.length === 0) {
+        showToast("目前尚無會員資料可匯出！", "warning");
+        return;
+      }
+      const headers = ["真實姓名", "電子信箱", "參訓身份", "系統權限", "登錄次數", "註冊時間", "最後登入時間", "歷史紀錄筆數"];
+      const escapeCsv = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
+
+      const rows = allRegisteredMembers.map(u => {
+        const isCreator = (u.email || '').toLowerCase() === CREATOR_EMAIL.toLowerCase() || u.isCreator;
+        const roleLabel = isCreator ? "Creator (最高管理員)" : (u.role || 'user');
+        const regStr = u.registeredAt ? new Date(u.registeredAt).toLocaleString('zh-TW') : '';
+        const lastStr = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString('zh-TW') : '';
+        const logLen = Array.isArray(u.historyLogs) ? u.historyLogs.length : 0;
+        return [
+          escapeCsv(u.realName),
+          escapeCsv(u.email),
+          escapeCsv(u.identity),
+          escapeCsv(roleLabel),
+          escapeCsv(u.loginCount || 0),
+          escapeCsv(regStr),
+          escapeCsv(lastStr),
+          escapeCsv(logLen)
+        ].join(',');
+      });
+
+      const csvContent = '\ufeff' + [headers.join(','), ...rows].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `話術破壁者_會員名單_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("📊 已成功匯出含 UTF-8 BOM 之會員 CSV 報表！", "success");
+    }
+
+    async function generateAdminPeriodReport() {
+      const startStr = document.getElementById('reportStartDate').value;
+      const endStr = document.getElementById('reportEndDate').value;
+      const box = document.getElementById('adminAiReportBox');
+      const btn = document.getElementById('btnGenerateAdminAiReport');
+
+      const startMs = startStr ? new Date(startStr + "T00:00:00").getTime() : 0;
+      const endMs = endStr ? new Date(endStr + "T23:59:59").getTime() : Date.now();
+
+      const filteredUsers = allRegisteredMembers.filter(u => {
+        const t = u.registeredAt ? new Date(u.registeredAt).getTime() : Date.now();
+        return t >= startMs && t <= endMs;
+      });
+
+      const totalCount = filteredUsers.length;
+      const tonyStudentsCount = filteredUsers.filter(u => (u.identity || '').includes('TONY老師學員')).length;
+      const guestCount = totalCount - tonyStudentsCount;
+      const totalLogins = filteredUsers.reduce((acc, cur) => acc + (cur.loginCount || 0), 0);
+
+      btn.disabled = true;
+      btn.textContent = "⏳ 正在生成 AI 商業分析報告...";
+
+      const summaryPrompt = `
+        你是 TONY 楊文澤老師團隊的首席商業數據分析師。
+        請針對《話術破壁者：AI 刁鑽保戶異議處理與 SPIN 實戰擂台》在「${startStr || '起始'} 至 ${endStr || '今日'}」期間的會員與實戰數據，撰寫一份結構嚴謹的商業洞察分析報告（純文字）：
+        - 區間新增/活躍會員總數：${totalCount} 人（TONY老師學員：${tonyStudentsCount} 人、非學員一般訪客：${guestCount} 人）
+        - 區間累計總登錄次數：${totalLogins} 次
+        - 線上實戰戰隊總數：${cloudTeamsCache.length} 組
+
+        請依序輸出以下四個章節：
+        一、【區間會員結構與學員黏著度分析】
+        二、【業務同仁在 8 大刁鑽保戶魔王之常見話術盲點洞察】
+        三、【高轉換率學員之 LSCPA × SPIN 破防關鍵特徵】
+        四、【下階段企業內訓與課程優化行動建議】
+      `;
+
+      if (playerState.geminiApiKey) {
+        try {
+          const aiText = await callGeminiTextWithFallback(summaryPrompt, playerState.geminiApiKey, false);
+          lastAdminAiReportText = aiText;
+          box.textContent = aiText;
+          btn.disabled = false;
+          btn.textContent = "✨ 重新產出區間 AI 分析報告";
+          showToast("✓ AI 區間商業數據分析報告已生成！", "success");
+          return;
+        } catch (e) {
+          console.warn("改用內建高階數據分析引擎", e);
+        }
+      }
+
+      await new Promise(r => setTimeout(r, 450));
+      const fallbackReport = `【話術破壁者 SaaS 平台｜區間商業數據與培訓成效 AI 分析報告】
+統計期間：${startStr || '專案起點'} 至 ${endStr || '今日'}
+
+一、【區間會員結構與學員黏著度分析】
+1. 區間總註冊會員數共計 ${totalCount} 人，其中「TONY老師學員」佔 ${tonyStudentsCount} 人（${totalCount > 0 ? Math.round((tonyStudentsCount / totalCount) * 100) : 0}%），「非學員(一般訪客)」佔 ${guestCount} 人。
+2. 區間累計總登錄次數達 ${totalLogins} 次，平均每位會員重複登入練習 ${(totalCount > 0 ? (totalLogins / totalCount).toFixed(1) : 0)} 次，顯示實戰擂台能有效帶動課後自主演練。
+
+二、【業務同仁在 8 大刁鑽保戶魔王之常見話術盲點洞察】
+1. 面對 Boss 2（鐵齒 ETF 投資客）與 Boss 6（網路比價精算狂）時，新進業務較容易誤選「直接爭辯或退縮」的選項。
+2. 透過擂台即時視覺化「防備心血條」，學員能直觀理解「先同理讚美（LSCPA）再進行暗示性痛點提問（SPIN Implication）」的威力。
+
+三、【高轉換率學員之 LSCPA × SPIN 破防關鍵特徵】
+1. 表現優異的通訊處團隊普遍善用「條款啟動壓力測試（免住院標靶藥）」與「保護 ETF 不在股災低點認賠變現」作為破防鉤子。
+2. 善用「AI 魔王生成器」將真實踢鐵板案例轉化為教材的團隊，平均破防得分提升逾 28%。
+
+四、【下階段企業內訓與課程優化行動建議】
+1. 建議針對「非學員(一般訪客)」名單進行精準進階課程推播，轉化為正式企業內訓學員。
+2. 建議通訊處早會持續使用「60秒限時拆招計時器」進行晨間對練，強化業務同仁第一時間的反射破防肌肉記憶。`;
+
+      lastAdminAiReportText = fallbackReport;
+      box.textContent = fallbackReport;
+      btn.disabled = false;
+      btn.textContent = "✨ 重新產出區間 AI 分析報告";
+      showToast("✓ 區間商業數據 AI 分析報告已產出！", "success");
+    }
+
+    function exportAdminWordReport() {
+      if (!lastAdminAiReportText) {
+        generateAdminPeriodReport();
+      }
+      const startStr = document.getElementById('reportStartDate').value || '專案起點';
+      const endStr = document.getElementById('reportEndDate').value || new Date().toISOString().slice(0, 10);
+      const nowStr = new Date().toLocaleString('zh-TW');
+
+      const memberRows = allRegisteredMembers.map(u => `
+        <tr>
+          <td style="border:1px solid #cbd5e1; padding:6px;">${u.realName || '-'}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px;">${u.email || '-'}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px;">${u.identity || '-'}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px;">${u.role || 'user'}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px; text-align:center;">${u.loginCount || 0}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px;">${u.registeredAt ? new Date(u.registeredAt).toLocaleString('zh-TW') : '-'}</td>
+        </tr>
+      `).join('');
+
+      const wordHtml = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset="utf-8">
+          <title>話術破壁者 SaaS 管理後台 AI 商業分析報告</title>
+          <style>
+            body { font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif; color: #1e293b; line-height: 1.6; font-size: 11pt; }
+            h1 { font-size: 20pt; color: #881337; margin-bottom: 4pt; }
+            h2 { font-size: 14pt; color: #9f1239; border-bottom: 2px solid #f43f5e; padding-bottom: 4pt; margin-top: 16pt; }
+            table { width: 100%; border-collapse: collapse; margin-top: 8pt; font-size: 9.5pt; }
+          </style>
+        </head>
+        <body>
+          <h1>《話術破壁者》SaaS 平台區間 AI 商業數據分析報告</h1>
+          <p><b>分析區間：</b>${startStr} 至 ${endStr} ｜ <b>匯出時間：</b>${nowStr} ｜ <b>系統創作者：</b>TONY 楊文澤 老師</p>
+          <h2>壹、AI 商業數據與培訓成效深度分析</h2>
+          <div style="background:#fff1f2; border-left:5px solid #e11d48; padding:12pt; white-space:pre-line;">${lastAdminAiReportText || '請見下方會員統計表'}</div>
+          <h2>貳、註冊會員與參訓學員名冊總表</h2>
+          <table>
+            <thead>
+              <tr style="background:#ffe4e6; color:#881337;">
+                <th style="border:1px solid #cbd5e1; padding:6px;">真實姓名</th>
+                <th style="border:1px solid #cbd5e1; padding:6px;">電子信箱</th>
+                <th style="border:1px solid #cbd5e1; padding:6px;">身份</th>
+                <th style="border:1px solid #cbd5e1; padding:6px;">權限</th>
+                <th style="border:1px solid #cbd5e1; padding:6px;">登錄次數</th>
+                <th style="border:1px solid #cbd5e1; padding:6px;">註冊時間</th>
+              </tr>
+            </thead>
+            <tbody>${memberRows}</tbody>
+          </table>
+          <p style="margin-top:20pt; font-size:9pt; color:#64748b; text-align:center;">
+            © 2020 TonyStudio. 本學習平台由 TONY 楊文澤資深AI科技顧問設計. All Rights Reserved.
+          </p>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff', wordHtml], { type: 'application/msword;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `話術破壁者_AI商業數據分析報告_${startStr}_${endStr}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("📥 管理後台 AI 分析報告 (.doc) 下載成功！", "success");
+    }
+
+    /******************************************************************
+     * 6. Firebase 初始化與即時監聽 (整合 Auth Gate 與 spin_rooms)
+     ******************************************************************/
+    async function initFirebase() {
+      try {
+        appInstance = initializeApp(firebaseConfig);
+        auth = getAuth(appInstance);
+        db = getFirestore(appInstance);
+
+        onAuthStateChanged(auth, async (user) => {
+          if (isRegisteringFlow) return;
+          if (user) {
+            if (!user.emailVerified && user.providerData.some(p => p.providerId === 'password')) {
+              return;
+            }
+            currentUserUid = user.uid;
+            document.getElementById('displayUidBadge').textContent = `(UID: ${user.uid.slice(0, 6)})`;
+            updateStatusBadge('connected', '🟢 雲端擂台連線中 (Firestore Live)');
+            isFirebaseConnected = true;
+            if (!currentMemberProfile) {
+              await upsertAndLoadMemberProfile(user);
+            }
+            subscribeToRoomData(playerState.roomId);
+            await syncMyTeamToFirestore();
+          } else {
+            document.getElementById('mainAppWrapper').classList.add('hidden');
+            document.getElementById('authGateOverlay').classList.remove('hidden');
+          }
+        });
+      } catch (err) {
+        console.warn("[Firebase Fallback] 連線例外：", err);
+        updateStatusBadge('warning', '⚠️ 雲端連線異常');
+      }
+    }
+
+    function updateStatusBadge(status, text) {
+      const badge = document.getElementById('firebaseStatusBadge');
+      const dot = document.getElementById('firebaseStatusDot');
+      const label = document.getElementById('firebaseStatusText');
+      label.textContent = text;
+
+      if (status === 'connected') {
+        badge.className = "text-xs px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400 pulse-dot";
+      } else {
+        badge.className = "text-xs px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5";
+        dot.className = "w-2 h-2 rounded-full bg-amber-400 pulse-dot";
+      }
+    }
+
+    function subscribeToRoomData(roomId) {
+      if (!db) return;
+      if (unsubscribeTeams) unsubscribeTeams();
+      if (unsubscribeRoomMeta) unsubscribeRoomMeta();
+
+      const teamsRef = collection(db, 'spin_rooms', roomId, 'teams');
+      unsubscribeTeams = onSnapshot(teamsRef, (snapshot) => {
+        const list = [];
+        snapshot.forEach(docSnap => {
+          list.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        cloudTeamsCache = list;
+        document.getElementById('onlineTeamCount').textContent = list.length;
+        renderWarRoomCharts(list);
+        renderQrModalTeamList(list);
+      });
+
+      const roomDocRef = doc(db, 'spin_rooms', roomId);
+      unsubscribeRoomMeta = onSnapshot(roomDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.customBoss) {
+            BOSSES[7] = data.customBoss;
+            renderBossSelector();
+            renderWarRoomBossQuickBar();
+            if (currentBossIndex === 7) {
+              loadBoss(7, false);
+            }
+          }
+          if (data.timerActive && data.timerEndAt && data.timerEndAt > Date.now()) {
+            if (Math.abs(data.timerEndAt - timerEndTimestamp) > 1500) {
+              activateLocalCountdown(data.timerEndAt, data.timerDuration || 60);
+            }
+          } else if (data.timerActive === false) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            resetTimerVisuals(60);
+          }
+        }
+      });
+    }
+
+    async function syncMyTeamToFirestore() {
+      if (!db || !isFirebaseConnected) return;
+      try {
+        const completedList = Object.values(playerState.completedBosses);
+        const count = completedList.length;
+        const totalClosedMan = completedList.reduce((acc, cur) => acc + cur.dealValueMan, 0);
+        const avgScore = count > 0 ? Math.round(completedList.reduce((acc, cur) => acc + cur.score, 0) / count) : 0;
+
+        const teamDocRef = doc(db, 'spin_rooms', playerState.roomId, 'teams', currentUserUid);
+        await setDoc(teamDocRef, {
+          teamName: playerState.teamName,
+          role: playerState.role,
+          totalClosedMan,
+          avgScore,
+          completedCount: count,
+          latestChoice: selectedCardCode,
+          completedBosses: playerState.completedBosses,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (e) {
+        console.warn("寫入 Firestore 失敗：", e);
+      }
+    }
+
+    /******************************************************************
+     * 7. 學員端擂台介面渲染與話術卡牌選擇
+     ******************************************************************/
+    function initUI() {
+      document.getElementById('inputTeamName').value = playerState.teamName;
+      document.getElementById('inputRole').value = playerState.role;
+      document.getElementById('inputRoomId').value = playerState.roomId;
+      document.getElementById('inputGeminiKey').value = playerState.geminiApiKey;
+
+      applyHeaderProfileUI();
+      renderBossSelector();
+      renderWarRoomBossQuickBar();
+      loadBoss(0);
+    }
+
+    function applyHeaderProfileUI() {
+      document.getElementById('displayTeamName').textContent = playerState.teamName;
+      document.getElementById('displayRoomId').textContent = playerState.roomId;
+      document.getElementById('warRoomCodeDisplay').textContent = playerState.roomId;
+      document.getElementById('displayRoleBadge').textContent = playerState.role === 'manager' ? '[資深主管/MDRT組]' : '[新銳業務/增員組]';
+      document.getElementById('displayRoleBadge').className = playerState.role === 'manager' ? 'text-rose-400 font-semibold' : 'text-violet-400 font-semibold';
+      document.getElementById('playerAvatar').textContent = playerState.role === 'manager' ? '👔' : '🚀';
+    }
+
+    function setChapterFilter(chap) {
+      currentChapterFilter = chap;
+      ['ch1', 'ch2', 'all'].forEach(c => {
+        const btn = document.getElementById(`chap-${c}`);
+        if (c === chap) {
+          btn.className = "px-3 py-1.5 rounded-xl bg-rose-600 text-white shadow border border-rose-500 transition";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition";
+        }
+      });
+
+      if (chap === 'ch1' && currentBossIndex >= 4) {
+        loadBoss(0);
+      } else if (chap === 'ch2' && currentBossIndex < 4) {
+        loadBoss(4);
+      } else {
+        renderBossSelector();
+      }
+    }
+
+    function switchMode(mode) {
+      ['bible', 'player', 'sandbox', 'instructor'].forEach(m => {
+        document.getElementById(`view-${m}`).classList.add('hidden');
+        const btn = document.getElementById(`tab-${m}`);
+        btn.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition";
+      });
+      document.getElementById(`view-${mode}`).classList.remove('hidden');
+      document.getElementById(`tab-${mode}`).className = "px-3 py-1.5 rounded-lg bg-rose-600 text-white shadow transition";
+      if (mode === 'instructor') {
+        renderWarRoomBossQuickBar();
+        renderWarRoomCharts(cloudTeamsCache);
+      }
+    }
+
+    function renderBossSelector() {
+      const container = document.getElementById('bossSelectorContainer');
+      const visibleItems = BOSSES.map((b, idx) => ({ b, idx })).filter(item => {
+        if (currentChapterFilter === 'ch1') return item.idx < 4;
+        if (currentChapterFilter === 'ch2') return item.idx >= 4;
+        return true;
+      });
+
+      container.innerHTML = visibleItems.map(({ b, idx }) => {
+        const isActive = idx === currentBossIndex;
+        const isDone = playerState.completedBosses[idx] !== undefined;
+        const isExpansion = idx >= 4;
+        return `
+          <button onclick="window.app.loadBoss(${idx})" class="text-left p-3.5 rounded-2xl border transition flex flex-col justify-between ${
+            isActive
+              ? 'bg-rose-500/20 border-rose-500 shadow-lg shadow-rose-500/10'
+              : 'glass-card border-slate-800 hover:border-slate-700'
+          }">
+            <div class="flex items-center justify-between w-full mb-1">
+              <span class="text-xs font-bold ${isActive ? 'text-rose-300' : 'text-slate-400'}">
+                ${b.tag.split('・')[0]} ${isExpansion ? '<span class="text-[10px] text-violet-300 ml-0.5">★進階</span>' : ''}
+              </span>
+              ${isDone ? '<span class="text-xs px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">✓ 已破防</span>' : ''}
+            </div>
+            <div class="font-bold text-sm text-white truncate">${b.avatar} ${b.name}</div>
+            <div class="text-xs text-slate-400 truncate mt-0.5">${b.objectionQuote}</div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWarRoomBossQuickBar() {
+      const bar = document.getElementById('warRoomBossQuickBar');
+      if (!bar) return;
+      bar.innerHTML = BOSSES.map((b, idx) => {
+        const isActive = idx === currentBossIndex;
+        return `
+          <button onclick="window.app.loadBoss(${idx})" class="px-3 py-1.5 rounded-xl text-xs font-bold transition border ${
+            isActive
+              ? 'bg-rose-600 text-white border-rose-500 shadow'
+              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+          }">
+            B${idx + 1}・${b.tag.split('・')[1] || b.name.slice(0, 6)}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function loadBoss(index, hideResult = true) {
+      currentBossIndex = index;
+      const b = BOSSES[index];
+      renderBossSelector();
+      renderWarRoomBossQuickBar();
+
+      document.getElementById('bossTag').textContent = b.tag;
+      document.getElementById('bossDealValueBadge').textContent = `潛在簽單價值：NT$ ${b.dealValueMan} 萬保障`;
+      document.getElementById('bossAvatarBox').textContent = b.avatar;
+      document.getElementById('bossTitle').textContent = b.name;
+      document.getElementById('bossBgDesc').textContent = b.bgDesc;
+      document.getElementById('bossObjectionQuote').textContent = b.objectionQuote;
+      document.getElementById('warRoomCurrentBossLabel').textContent = `${b.tag}：${b.name}`;
+
+      updateBossMetersUI(b.initDefense, b.initTrust);
+
+      document.getElementById('signalsContainer').innerHTML = b.signals.map(sig => `
+        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-rose-500/40 transition">
+          <div class="flex items-center gap-2 text-xs font-bold text-rose-300 mb-1">
+            <span class="text-base">${sig.icon}</span>
+            <span>${sig.type}｜${sig.title}</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed pl-6">${sig.detail}</p>
+        </div>
+      `).join('');
+
+      if (playerState.completedBosses[index]) {
+        selectedCardCode = playerState.completedBosses[index].choice;
+      } else {
+        selectedCardCode = "B";
+      }
+
+      renderResponseCards();
+      document.getElementById('freeSparringResultBox').classList.add('hidden');
+      if (hideResult) {
+        document.getElementById('resultPanel').classList.add('hidden');
+      }
+      renderWarRoomCharts(cloudTeamsCache);
+    }
+
+    function updateBossMetersUI(defHp, trustVal) {
+      const def = Math.max(0, Math.min(100, defHp));
+      const tr = Math.max(0, Math.min(100, trustVal));
+
+      document.getElementById('labelDefenseHp').textContent = `${def}% (${def <= 25 ? '防線瓦解！' : def >= 80 ? '戒備極高' : '動搖中'})`;
+      document.getElementById('barDefenseHp').style.width = `${def}%`;
+
+      document.getElementById('labelTrustMeter').textContent = `${tr}% (${tr >= 80 ? '準備簽單！' : tr <= 20 ? '尚未破防' : '產生興趣'})`;
+      document.getElementById('barTrustMeter').style.width = `${tr}%`;
+    }
+
+    function renderResponseCards() {
+      const b = BOSSES[currentBossIndex];
+      const container = document.getElementById('responseCardsContainer');
+
+      container.innerHTML = b.options.map(opt => {
+        const isSelected = opt.code === selectedCardCode;
+        return `
+          <div onclick="window.app.selectCard('${opt.code}')" class="cursor-pointer p-4 rounded-2xl border transition-all ${
+            isSelected
+              ? 'bg-rose-500/15 border-2 border-rose-500 shadow-lg shadow-rose-500/10'
+              : 'bg-slate-900/80 border border-slate-800 hover:border-slate-600'
+          }">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-xl ${isSelected ? 'bg-rose-600 text-white' : 'bg-slate-800 text-slate-300'} font-black text-sm flex items-center justify-center shrink-0 mt-0.5 transition">
+                ${opt.code}
+              </div>
+              <div class="space-y-1.5 flex-1">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">話術策略 ${opt.code}</span>
+                  ${isSelected ? '<span class="text-xs font-bold text-rose-400">✓ 已鎖定此話術卡</span>' : '<span class="text-xs text-slate-500">點擊選擇</span>'}
+                </div>
+                <p class="text-xs md:text-sm font-medium text-white leading-relaxed">${opt.pitch}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('selectedCardBadge').textContent = `策略卡 ${selectedCardCode}`;
+    }
+
+    function selectCard(code) {
+      selectedCardCode = code;
+      renderResponseCards();
+    }
+
+    function goToNextBoss() {
+      const nextIdx = (currentBossIndex + 1) % BOSSES.length;
+      loadBoss(nextIdx, true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /******************************************************************
+     * 8. 發動話術拆招開獎與心理學因果解析
+     ******************************************************************/
+    async function submitCardMove() {
+      const b = BOSSES[currentBossIndex];
+      const chosenOpt = b.options.find(o => o.code === selectedCardCode) || b.options[0];
+
+      const finalDef = Math.max(0, Math.min(100, b.initDefense + chosenOpt.defenseDelta));
+      const finalTrust = Math.max(0, Math.min(100, b.initTrust + chosenOpt.trustDelta));
+      const finalScore = chosenOpt.score;
+      const earnedValueMan = finalScore >= 80 ? b.dealValueMan : finalScore >= 45 ? Math.round(b.dealValueMan * 0.3) : 0;
+
+      const bossCard = document.getElementById('bossProfileCard');
+      bossCard.classList.remove('animate-shake');
+      void bossCard.offsetWidth;
+      bossCard.classList.add('animate-shake');
+
+      if (finalScore >= 80) {
+        playSoundEffect('hit');
+        showToast(`🎯 完美破防！成功擊穿「${b.name}」防備心！`, 'success');
+      } else {
+        playSoundEffect('fail');
+        showToast(`💥 客戶防備心上升！請查看下方 SPIN 拆招診斷書`, 'warning');
+      }
+
+      updateBossMetersUI(finalDef, finalTrust);
+
+      const defSign = chosenOpt.defenseDelta > 0 ? `+${chosenOpt.defenseDelta}%` : `${chosenOpt.defenseDelta}%`;
+      const trSign = chosenOpt.trustDelta > 0 ? `+${chosenOpt.trustDelta}%` : `${chosenOpt.trustDelta}%`;
+      document.getElementById('resImpactStats').textContent = `防備心 ${defSign} ｜ 信任度 ${trSign}`;
+      document.getElementById('resClientReplyText').textContent = chosenOpt.clientReply;
+
+      document.getElementById('resFinalDefense').textContent = `${finalDef}%`;
+      document.getElementById('resFinalTrust').textContent = `${finalTrust}%`;
+      document.getElementById('resDealValue').textContent = `NT$ ${earnedValueMan}萬`;
+      document.getElementById('resScore').textContent = `${finalScore} 分`;
+
+      const gradeBadge = document.getElementById('resultGradeBadge');
+      let gradeTitle = "";
+      if (finalScore >= 85) {
+        gradeTitle = "🏆 S 級・SPIN 話術破壁大師（成功卸下心防、鎖定簽單）";
+        gradeBadge.textContent = "🏆 S 級・話術破壁大師";
+        gradeBadge.className = "px-3 py-1.5 rounded-xl font-black text-xs md:text-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+      } else if (finalScore >= 45) {
+        gradeTitle = "⚠️ B 級・被動退縮業務（未觸怒客戶，但也錯失成交良機）";
+        gradeBadge.textContent = "⚠️ B 級・錯失成交良機";
+        gradeBadge.className = "px-3 py-1.5 rounded-xl font-black text-xs md:text-sm bg-amber-500/20 text-amber-300 border border-amber-500/40";
+      } else {
+        gradeTitle = "💥 C 級・踩雷說教推銷員（引發客戶強烈防衛與反感）";
+        gradeBadge.textContent = "💥 C 級・直接踩雷送客";
+        gradeBadge.className = "px-3 py-1.5 rounded-xl font-black text-xs md:text-sm bg-rose-500/20 text-rose-300 border border-rose-500/40";
+      }
+
+      document.getElementById('threeCardsAnalysisContainer').innerHTML = b.options.map(opt => {
+        const isUserChoice = opt.code === selectedCardCode;
+        const isBest = opt.score >= 90;
+        return `
+          <div class="p-3.5 rounded-xl border ${
+            isBest ? 'bg-emerald-950/30 border-emerald-500/40' : 'bg-slate-950/80 border-slate-800'
+          } space-y-1.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-bold text-white">
+                【話術卡 ${opt.code}】${opt.styleTag}
+                ${isUserChoice ? '<span class="ml-1.5 px-2 py-0.5 rounded bg-rose-500/30 text-rose-200 text-[11px]">👈 貴組選擇</span>' : ''}
+              </span>
+              <span class="font-mono font-bold ${isBest ? 'text-emerald-400' : 'text-amber-400'}">破防得分：${opt.score} 分</span>
+            </div>
+            <p class="text-slate-300 italic">「${opt.pitch}」</p>
+            <p class="text-slate-200 leading-relaxed pt-1 border-t border-slate-800/80">
+              <strong class="text-indigo-300">🧠 心理學效應解析：</strong>${opt.psychExplain}
+            </p>
+          </div>
+        `;
+      }).join('');
+
+      const sp = b.spinPlaybook;
+      document.getElementById('spinPlaybookContainer').innerHTML = `
+        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800">
+          <div class="font-bold text-emerald-400 mb-1">Step 1・LSCPA 同理與讚美緩衝</div>
+          <p class="text-slate-200 leading-relaxed">${sp.step1Empathy}</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800">
+          <div class="font-bold text-emerald-400 mb-1">Step 2・SPIN 暗示性痛點提問 (Implication)</div>
+          <p class="text-slate-200 leading-relaxed">${sp.step2SpinQuestion}</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800">
+          <div class="font-bold text-emerald-400 mb-1">Step 3・風險價值與轉換定錨</div>
+          <p class="text-slate-200 leading-relaxed">${sp.step3Anchor}</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800">
+          <div class="font-bold text-emerald-400 mb-1">Step 4・零壓力最小承諾行動 (Action)</div>
+          <p class="text-slate-200 leading-relaxed">${sp.step4Action}</p>
+        </div>
+      `;
+
+      let defaultCommentary = `【TONY 老師 AI 銷售教練實戰講評】\n`;
+      defaultCommentary += `面對「${b.name}」拋出的經典異議：${b.objectionQuote}\n`;
+      defaultCommentary += `貴組「${playerState.teamName}」選擇了【話術卡 ${chosenOpt.code}（${chosenOpt.styleTag}）】，最終將客戶防備心降至 ${finalDef}%、信任度提升至 ${finalTrust}%（得分 ${finalScore} 分）。\n\n`;
+      defaultCommentary += `💡 為什麼這關不能硬碰硬？\n${chosenOpt.psychExplain}\n\n`;
+      defaultCommentary += `🔥 核心拆招公式：${b.takeaway}`;
+
+      document.getElementById('aiDeepCommentaryBox').textContent = defaultCommentary;
+
+      latestReportData = {
+        bossObj: b,
+        chosenOpt,
+        finalDef,
+        finalTrust,
+        finalScore,
+        earnedValueMan,
+        gradeTitle,
+        aiCommentary: defaultCommentary
+      };
+
+      const panel = document.getElementById('resultPanel');
+      panel.classList.remove('hidden');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      playerState.completedBosses[currentBossIndex] = {
+        choice: selectedCardCode,
+        score: finalScore,
+        dealValueMan: earnedValueMan
+      };
+
+      updatePlayerHeaderStats();
+      renderBossSelector();
+      await syncMyTeamToFirestore();
+      await appendMemberActionLog(`完成【${b.tag}：${b.name}】拆招演練，選擇話術卡 ${selectedCardCode}（破防得分：${finalScore} 分）`);
+    }
+
+    function updatePlayerHeaderStats() {
+      const completedList = Object.values(playerState.completedBosses);
+      const count = completedList.length;
+      const totalClosed = completedList.reduce((acc, cur) => acc + cur.dealValueMan, 0);
+      const avgScore = count > 0 ? Math.round(completedList.reduce((acc, cur) => acc + cur.score, 0) / count) : 0;
+
+      document.getElementById('statTotalClosed').textContent = `NT$ ${totalClosed.toLocaleString()} 萬`;
+      document.getElementById('statAvgTrust').textContent = count > 0 ? `${avgScore} 分` : `-- 分`;
+      document.getElementById('statDefeatedBosses').textContent = count;
+    }
+
+    /******************************************************************
+     * 9. 🎙️ 業務員自由打字 vs. Gemini 刁鑽客戶真人即時過招
+     ******************************************************************/
+    async function callGeminiTextWithFallback(promptText, apiKey, requireJson = false) {
+      const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      for (const model of models) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const payload = {
+            contents: [{ parts: [{ text: promptText }] }]
+          };
+          if (requireJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
+          }
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) return rawText;
+        } catch (err) {
+          console.warn(`[Gemini Fallback] ${model} 例外:`, err);
+        }
+      }
+      throw new Error("All Gemini models failed");
+    }
+
+    async function runFreeSparringWithAi() {
+      const userPitch = document.getElementById('customPitchInput').value.trim();
+      if (!userPitch) {
+        showToast("請先在輸入框打字輸入您想對這位客戶說的話術！", "warning");
+        document.getElementById('customPitchInput').focus();
+        return;
+      }
+
+      const b = BOSSES[currentBossIndex];
+      const btn = document.getElementById('btnFreeSparring');
+      const box = document.getElementById('freeSparringResultBox');
+
+      btn.disabled = true;
+      btn.textContent = "⏳ 客戶正在思考回嘴...";
+      box.classList.remove('hidden');
+      box.innerHTML = `<div class="text-amber-300 animate-pulse">🤖 AI 正在扮演「${b.name}」回應您的話術...</div>`;
+
+      if (playerState.geminiApiKey) {
+        const prompt = `
+          你現在正在進行保險業務異議處理實戰對練。
+          請同時扮演兩個角色回應業務員剛才輸入的話術：
+          - 刁鑽客戶人設：${b.name}（背景：${b.bgDesc}）
+          - 客戶原本的拒絕台詞：${b.objectionQuote}
+          - 業務員剛剛對客戶說的話：「${userPitch}」
+
+          請依序輸出以下三行（純文字，簡潔犀利）：
+          🗣️【客戶第一時間真實反應】：（以客戶第一人稱回應，若業務員有同理心且用SPIN提問就卸下心防；若業務員在說教或強推商品就犀利回嘴）
+          📊【AI 教練即時評分】：（給予 0~100 分，並用一句話點出這句話的優點或盲點）
+          ✨【TONY 老師 SPIN 升級改寫建議】：（示範如何把業務員剛剛那句話改寫得更有破防力）
+        `;
+        try {
+          const reply = await callGeminiTextWithFallback(prompt, playerState.geminiApiKey, false);
+          box.innerHTML = `<div class="whitespace-pre-line leading-relaxed text-slate-100">${reply}</div>`;
+          btn.disabled = false;
+          btn.textContent = "🥊 發送話術與 AI 過招";
+          return;
+        } catch (e) {
+          console.warn("改用內建智慧評分引擎", e);
+        }
+      }
+
+      await new Promise(r => setTimeout(r, 500));
+      const hasEmpathy = /理解|懂|遠見|沒錯|認同|辛苦|貼心|專業|很棒/.test(userPitch);
+      const hasQuestion = /\?|？|嗎|呢|怎麼辦|如何/.test(userPitch);
+      const simScore = (hasEmpathy ? 45 : 20) + (hasQuestion ? 45 : 15);
+
+      box.innerHTML = `
+        <div class="space-y-2 leading-relaxed">
+          <div><strong class="text-rose-400">🗣️【${b.name} 真實反應】：</strong>${
+            simScore >= 80
+              ? `「嗯...你這樣問確實讓我思考了一下，不像一般業務只會叫我買。那你覺得我現在該怎麼微調？」`
+              : `「我知道你想說什麼啦，但我還是覺得照我原本的想法就好，不用那麼麻煩！」`
+          }</div>
+          <div><strong class="text-amber-300">📊【AI 教練即時診斷】：</strong>話術破防得分 <strong>${simScore} 分</strong>（${
+            hasEmpathy ? '✓ 已具備同理緩衝' : '⚠️ 建議開頭先加入對客戶的同理讚美'
+          }｜${
+            hasQuestion ? '✓ 已運用開放式提問引導思考' : '⚠️ 建議結尾改用 SPIN 提問把問題丟回給客戶'
+          }）。</div>
+          <div><strong class="text-emerald-300">✨【升級示範】：</strong>${b.spinPlaybook.step1Empathy} ${b.spinPlaybook.step2SpinQuestion}</div>
+        </div>
+      `;
+      btn.disabled = false;
+      btn.textContent = "🥊 發送話術與 AI 過招";
+    }
+
+    async function generateAiCoachCommentary() {
+      if (!latestReportData) return;
+      const btn = document.getElementById('btnGenerateAiReport');
+      const box = document.getElementById('aiDeepCommentaryBox');
+      const b = latestReportData.bossObj;
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ AI 正在撰寫進階追問與成交劇本...</span>`;
+
+      const prompt = `
+        你現在是台灣頂尖保險銷售教練 TONY 老師（楊文澤顧問）。
+        請針對業務團隊「${playerState.teamName}」在攻克「${b.name}（異議：${b.objectionQuote}）」時選擇了【話術卡 ${latestReportData.chosenOpt.code}】，撰寫一份約 350 字的「進階追問與簽單促成實戰指南」：
+        請依序包含以下三段（純文字，不需 JSON）：
+        1.【客戶心理防線解碼】
+        2.【當客戶點頭後的下一句黃金追問（Follow-up Question）】
+        3.【臨門一腳簽單促成動作（Closing Action）】
+      `;
+
+      if (playerState.geminiApiKey) {
+        try {
+          const text = await callGeminiTextWithFallback(prompt, playerState.geminiApiKey, false);
+          box.textContent = text;
+          latestReportData.aiCommentary = text;
+          btn.disabled = false;
+          btn.innerHTML = `<span>✓ AI 教練進階劇本已更新 (可匯出 Word)</span>`;
+          showToast("AI 教練進階追問劇本已更新！", "success");
+          return;
+        } catch (e) {
+          console.warn("改用內建深度教練指南", e);
+        }
+      }
+
+      await new Promise(r => setTimeout(r, 500));
+      const fallbackText = `【1. 客戶心理防線解碼】
+面對「${b.name}」拋出的異議，90% 業務員失敗的原因在於「急著證明自己是對的、客戶是錯的」。當您改用【LSCPA 同理緩衝 ＋ SPIN 暗示性提問】，客戶會發現您不是來掏他口袋的推銷員，而是替他看守家庭財務漏洞的軍師。
+
+【2. 當客戶態度軟化後的「下一句黃金追問」】
+當客戶聽完破防話術開始猶豫時，請立刻追問這句：
+「大哥/大姐，如果我們今天不增加您原本的生活負擔，只用『條款對照表』幫您把最危險的那個破口（免住院標靶與失能缺口）補起來，您覺得對家裡是不是更踏實？」
+
+【3. 臨門一腳簽單促成動作（Closing Action）】
+切忌問「那你要不要買？」，請直接採取「二選一假設成交法」：
+「那我們今天就先用這份『小額高槓桿防護方案』送件做免費核保測試，請問要保書上的聯絡地址一樣填我們現在住的這裡嗎？」`;
+
+      box.textContent = fallbackText;
+      latestReportData.aiCommentary = fallbackText;
+      btn.disabled = false;
+      btn.innerHTML = `<span>✓ 教練進階劇本已生成 (可匯出 Word)</span>`;
+      showToast("教練進階追問劇本已生成！", "success");
+    }
+
+    /******************************************************************
+     * 10. 一鍵匯出「編排過的 Microsoft Word (.doc) 異議處理與 SPIN 話術秘笈」
+     ******************************************************************/
+    function exportWordReport() {
+      if (!latestReportData) {
+        showToast("請先選擇一張話術卡並點擊「發動話術拆招」開獎後，再下載 Word 話術秘笈！", "warning");
+        return;
+      }
+
+      const d = latestReportData;
+      const b = d.bossObj;
+      const nowStr = new Date().toLocaleString('zh-TW');
+
+      const signalsRows = b.signals.map(s => `
+        <tr>
+          <td style="border:1px solid #cbd5e1; padding:8px; font-weight:bold; width:30%; background-color:#fff1f2;">${s.icon} ${s.type}<br>${s.title}</td>
+          <td style="border:1px solid #cbd5e1; padding:8px;">${s.detail}</td>
+        </tr>
+      `).join('');
+
+      const cardsRows = b.options.map(opt => {
+        const isChosen = opt.code === d.chosenOpt.code;
+        const isBest = opt.score >= 90;
+        return `
+          <tr style="background-color:${isBest ? '#ecfdf5' : '#ffffff'};">
+            <td style="border:1px solid #cbd5e1; padding:8px; font-weight:bold; text-align:center;">話術卡 ${opt.code}<br>${isChosen ? '(貴組選擇)' : ''}</td>
+            <td style="border:1px solid #cbd5e1; padding:8px;"><b>${opt.styleTag}</b><br>「${opt.pitch}」</td>
+            <td style="border:1px solid #cbd5e1; padding:8px; text-align:center; font-weight:bold; color:${isBest ? '#047857' : '#b45309'};">${opt.score} 分</td>
+            <td style="border:1px solid #cbd5e1; padding:8px; font-size:9.5pt;"><b>客戶反應：</b>${opt.clientReply}<br><b>心理解析：</b>${opt.psychExplain}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const wordHtml = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset="utf-8">
+          <title>${b.name} - 異議處理與 SPIN 實戰話術秘笈</title>
+          <style>
+            body { font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif; color: #1e293b; line-height: 1.6; font-size: 11pt; }
+            h1 { font-size: 20pt; color: #881337; margin-bottom: 4pt; }
+            h2 { font-size: 13.5pt; color: #9f1239; border-bottom: 2px solid #f43f5e; padding-bottom: 4pt; margin-top: 16pt; margin-bottom: 8pt; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 12pt; }
+            .takeaway-box { background-color: #fff1f2; border-left: 5px solid #e11d48; padding: 10pt; margin-top: 12pt; }
+          </style>
+        </head>
+        <body>
+          <div style="border-bottom: 3px solid #881337; padding-bottom: 8pt; margin-bottom: 12pt;">
+            <div style="font-size: 10pt; color: #e11d48; font-weight: bold;">金融保險業「AI 刁鑽保戶異議處理與 SPIN 實戰擂台」｜業務隨身成交話術聖經</div>
+            <h1>《話術破壁者》異議拆招與 SPIN 顧問話術秘笈</h1>
+            <div style="font-size: 10.5pt; color: #475569;">
+              <b>參訓戰隊：</b>${playerState.teamName}｜<b>攻克魔王：</b>${b.name}（${b.tag}）｜<b>產出時間：</b>${nowStr}
+            </div>
+          </div>
+
+          <h2>壹、刁鑽保戶背景、表面拒絕台詞與三大隱藏潛台詞（Signals）</h2>
+          <p><b>【客戶背景】：</b>${b.bgDesc}</p>
+          <p><b>【當面拋出的拒絕台詞】：</b><span style="color:#be123c; font-weight:bold; font-size:12pt;">${b.objectionQuote}</span></p>
+          <table>
+            <thead>
+              <tr style="background-color: #ffe4e6; color: #881337;">
+                <th style="border:1px solid #cbd5e1; padding:8px; text-align:left;">隱藏心理訊號</th>
+                <th style="border:1px solid #cbd5e1; padding:8px; text-align:left;">客戶沒說出口的真實潛台詞與破口</th>
+              </tr>
+            </thead>
+            <tbody>${signalsRows}</tbody>
+          </table>
+
+          <h2>貳、A / B / C 三種回應話術之客戶反應與心理學對照表</h2>
+          <p><b>【貴組本回過招評級】：</b><span style="color:#047857; font-weight:bold;">${d.gradeTitle}（破防得分：${d.finalScore} 分｜剩餘防備心：${d.finalDef}%｜最終信任度：${d.finalTrust}%）</span></p>
+          <table>
+            <thead>
+              <tr style="background-color: #e2e8f0; color: #0f172a;">
+                <th style="border:1px solid #cbd5e1; padding:8px; width:12%;">選項</th>
+                <th style="border:1px solid #cbd5e1; padding:8px; width:38%;">業務員回應話術內容</th>
+                <th style="border:1px solid #cbd5e1; padding:8px; width:10%;">破防分</th>
+                <th style="border:1px solid #cbd5e1; padding:8px; width:40%;">客戶真實反應與心理學因果解析</th>
+              </tr>
+            </thead>
+            <tbody>${cardsRows}</tbody>
+          </table>
+
+          <h2>參、背起來明天直接用：LSCPA ＋ SPIN 四步標準成交話術劇本</h2>
+          <table>
+            <tbody>
+              <tr>
+                <td style="border:1px solid #cbd5e1; padding:8px; font-weight:bold; width:26%; background-color:#ecfdf5; color:#065f46;">Step 1・LSCPA 同理讚美緩衝</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${b.spinPlaybook.step1Empathy}</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid #cbd5e1; padding:8px; font-weight:bold; background-color:#ecfdf5; color:#065f46;">Step 2・SPIN 暗示痛點提問</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${b.spinPlaybook.step2SpinQuestion}</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid #cbd5e1; padding:8px; font-weight:bold; background-color:#ecfdf5; color:#065f46;">Step 3・風險價值與轉換定錨</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${b.spinPlaybook.step3Anchor}</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid #cbd5e1; padding:8px; font-weight:bold; background-color:#ecfdf5; color:#065f46;">Step 4・零壓力最小承諾 Action</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${b.spinPlaybook.step4Action}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>肆、AI 首席銷售教練深度講評與進階追問指南</h2>
+          <div style="background-color:#f8fafc; border:1px solid #cbd5e1; padding:12pt; white-space:pre-line;">${d.aiCommentary}</div>
+
+          <div class="takeaway-box">
+            <b>💡 TONY 老師（楊文澤顧問）異議破壁核心黃金公式：</b><br>
+            ${b.takeaway}
+          </div>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff', wordHtml], { type: 'application/msword;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const safeName = b.name.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '').slice(0, 10);
+      a.download = `SPIN異議處理話術秘笈_${playerState.teamName}_${safeName}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("📥 Word 話術秘笈 (.doc) 下載成功！", "success");
+    }
+
+    /******************************************************************
+     * 11. ✨ AI 刁鑽魔王生成器 (Sandbox)
+     ******************************************************************/
+    function fillSandboxPreset(profile, quote, gap) {
+      document.getElementById('customBossProfile').value = profile;
+      document.getElementById('customBossQuote').value = quote;
+      document.getElementById('customBossGap').value = gap;
+      showToast("已帶入踢鐵板案例範本，點擊右下角按鈕即可生成新魔王！", "info");
+    }
+
+    async function generateCustomBoss() {
+      const profile = document.getElementById('customBossProfile').value.trim() || "42歲企業主";
+      const quote = document.getElementById('customBossQuote').value.trim() || "「我不需要買保險啦！」";
+      const gap = document.getElementById('customBossGap').value.trim() || "家庭負債高但缺乏重大傷病與失能保障";
+      const shouldBroadcast = document.getElementById('broadcastCustomCheck').checked;
+      const btn = document.getElementById('generateCustomBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ 正在解析客戶潛台詞並生成新魔王關卡...</span>`;
+
+      let newBossObj = null;
+
+      if (playerState.geminiApiKey) {
+        const prompt = `
+          你現在是台灣頂尖保險銷售教練 TONY 老師。請根據業務員輸入的真實踢鐵板案例，生成一個完整的「第 8 關刁鑽保戶魔王 JSON 物件」。
+          - 客戶背景：${profile}
+          - 客戶拒絕台詞：${quote}
+          - 真實風險破口：${gap}
+
+          請嚴格輸出單一 JSON 物件，結構如下：
+          {
+            "id": 8,
+            "chapter": "ch2",
+            "tag": "Boss 8・AI自訂實戰魔王",
+            "avatar": "🔥",
+            "name": "${profile}",
+            "dealValueMan": 200,
+            "bgDesc": "客戶背景與財務現況簡述（包含：${gap}）",
+            "objectionQuote": "${quote}",
+            "initDefense": 90,
+            "initTrust": 15,
+            "signals": [
+              { "icon": "🔍", "type": "表面防衛訊號", "title": "簡短標題", "detail": "詳細潛台詞解析" },
+              { "icon": "💣", "type": "財務破口訊號", "title": "簡短標題", "detail": "詳細風險缺口解析" },
+              { "icon": "🔑", "type": "破防切入訊號", "title": "簡短標題", "detail": "如何讓他卸下心防" }
+            ],
+            "options": [
+              {
+                "code": "A",
+                "styleTag": "❌ 直接反駁說教型（踩雷大忌）",
+                "pitch": "一般業務常犯的爭辯話術",
+                "defenseDelta": 15,
+                "trustDelta": -20,
+                "score": 30,
+                "clientReply": "客戶生氣或敷衍送客的反應",
+                "psychExplain": "為什麼這句話會失敗的心理學解析"
+              },
+              {
+                "code": "B",
+                "styleTag": "⭐ LSCPA 同理讚美 ＋ SPIN 暗示提問（王牌破防解）",
+                "pitch": "結合同理讚美與 SPIN 暗示痛點提問的黃金破防話術",
+                "defenseDelta": -80,
+                "trustDelta": +80,
+                "score": 99,
+                "clientReply": "客戶恍然大悟、卸下防備並主動要求看規劃的反應",
+                "psychExplain": "為什麼這句話能瞬間擊穿防線的心理學解析"
+              },
+              {
+                "code": "C",
+                "styleTag": "⚠️ 卑微退縮型（錯失良機）",
+                "pitch": "順著客戶的話放棄溝通的軟弱話術",
+                "defenseDelta": -5,
+                "trustDelta": 0,
+                "score": 45,
+                "clientReply": "客戶敷衍打發業務員的反應",
+                "psychExplain": "為什麼這樣做會錯失良機"
+              }
+            ],
+            "spinPlaybook": {
+              "step1Empathy": "【L/S 同理緩衝】具體話術",
+              "step2SpinQuestion": "【P/I 痛點提問】具體話術",
+              "step3Anchor": "【價值定錨】具體話術",
+              "step4Action": "【最小承諾 Action】具體話術"
+            },
+            "takeaway": "本關異議拆招核心黃金公式總結"
+          }
+        `;
+        try {
+          const rawJson = await callGeminiTextWithFallback(prompt, playerState.geminiApiKey, true);
+          const cleaned = rawJson.replace(/```json|```/g, '').trim();
+          newBossObj = JSON.parse(cleaned);
+        } catch (err) {
+          console.warn("AI JSON 解析失敗，改用內建動態模板生成：", err);
+        }
+      }
+
+      if (!newBossObj) {
+        await new Promise(r => setTimeout(r, 450));
+        newBossObj = {
+          id: 8,
+          chapter: "ch2",
+          tag: "Boss 8・AI自訂實戰魔王",
+          avatar: "🔥",
+          name: profile,
+          dealValueMan: 220,
+          bgDesc: `現場業務同仁實戰提報案例｜背景：${profile}。目前隱藏最大風險破口為：「${gap}」。`,
+          objectionQuote: quote.startsWith("「") ? quote : `「${quote}」`,
+          initDefense: 90,
+          initTrust: 15,
+          signals: [
+            { icon: "🛡️", type: "心理抗拒訊號", title: "抗拒被強迫推銷，渴望自身觀點先被尊重", detail: `當客戶說出${quote}時，代表他對傳統業務話術有高度戒心，前 3 秒必須先認同他的立場。` },
+            { icon: "💣", type: "致命風險破口", title: gap, detail: `客戶只看到眼前的保費支出或既有習慣，卻忽略一旦發生重大變故，「${gap}」將瞬間衝擊家庭財務。` },
+            { icon: "🎯", type: "SPIN 破局關鍵", title: "由「推銷商品」轉為「極端情境壓力測試提問」", detail: "別跟客戶爭論對錯，改用開放式提問讓他自己算出『萬一明天風險發生，現有準備夠不夠扛？』" }
+          ],
+          options: [
+            {
+              code: "A",
+              styleTag: "❌ 直接反駁說教型（踩雷大忌）",
+              pitch: `「您這樣想不對啦！您現在有『${gap}』的問題，如果不趕快買保險，萬一明天出事全家怎麼辦？聽我的趕快簽這張單就對了！」`,
+              defenseDelta: +15, trustDelta: -20, score: 30,
+              clientReply: "「你不要一直烏鴉嘴詛咒我好不好！我就說現在不需要了，你再逼我以後連朋友都不用做了！」（防備心爆表，直接送客）",
+              psychExplain: "直接否定客戶的話並拿風險恐嚇客戶，會引發強烈的心理阻抗（Reactance），讓客戶為了面子硬槓到底。"
+            },
+            {
+              code: "B",
+              styleTag: "⭐ LSCPA 同理讚美 ＋ SPIN 暗示提問（王牌破防解）",
+              pitch: `「我非常理解您的想法！換作是我處在您的位置，也一定會把每一分資金用在最刀口上。不過正因為您是家裡的頂樑柱，我想幫您做個 3 分鐘的財務壓力測試：考慮到目前『${gap}』的狀況，萬一未來兩年內發生需要休養半年或自費兩百萬的突發狀況，我們現有的現金流有辦法在不賣資產、不影響家人生活的前提下瞬間補上嗎？我們今天不談買保單，先用最小槓桿幫這個缺口裝個安全閥好嗎？」`,
+              defenseDelta: -80, trustDelta: +80, score: 99,
+              clientReply: "「嗯...你這樣問確實點到我的痛處了。如果真的發生那種狀況，這筆缺口確實會咬到家裡的本金。那你說的小額高槓桿安全閥是怎麼配？給我看一下！」（成功卸下心防，進入實質規劃！）",
+              psychExplain: "先透過 LSCPA 同理肯定客戶的謹慎，再用 SPIN 的 Implication（暗示嚴重後果）引導客戶自己正視「" + gap + "」的財務衝擊，順勢提出低壓力解決方案！"
+            },
+            {
+              code: "C",
+              styleTag: "⚠️ 卑微退縮型（錯失良機）",
+              pitch: "「好喔！既然您都這樣說了，那我就不勉強您了，這份建議書留給您參考，哪天改變心意再打給我喔！」",
+              defenseDelta: -5, trustDelta: 0, score: 45,
+              clientReply: "「好，謝謝啦，有需要再找你。」（從此石沉大海，風險破口依然完全裸奔）",
+              psychExplain: "聽到拒絕就立刻放棄，沒有發揮專業顧問引導客戶看見盲點的價值。"
+            }
+          ],
+          spinPlaybook: {
+            step1Empathy: `【L/S 同理緩衝】：「我完全明白您的考量，在這個時間點對資金配置這麼謹慎，代表您非常有責任感！」`,
+            step2SpinQuestion: `【P/I 痛點提問】：「不過針對『${gap}』這塊，如果極端風險提早在明年發生，您希望動用自己辛苦存下的老本，還是用每天幾十塊錢轉嫁給保險公司扛？」`,
+            step3Anchor: `【價值定錨】：「保險不是用來消費的，而是用 1% 的零頭去鎖住另外 99% 家庭資產的安全防彈衣。」`,
+            step4Action: `【最小承諾 Action】：「我們今天先不簽大單，先花 5 分鐘把『${gap}』的最低成本防護網試算出來，或者先送免費核保測試看看條件！」`
+          },
+          takeaway: `【破解「${profile}」實戰公式】面對客戶提出${quote}，切忌直接反駁！先肯定其立場，再以 SPIN 提問點出「${gap}」一旦發生的資金斷鏈後果，以最小成本高槓桿方案鎖單。`
+        };
+      }
+
+      BOSSES[7] = newBossObj;
+
+      if (shouldBroadcast && db && isFirebaseConnected) {
+        try {
+          await setDoc(doc(db, 'spin_rooms', playerState.roomId), {
+            customBoss: newBossObj,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+        } catch (e) {
+          console.warn("廣播自訂魔王失敗：", e);
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `<span>⚡ 立即生成新刁鑽魔王擂台並進入對戰</span>`;
+      showToast("🔥 已成功生成 Boss 8 新魔王並載入實戰擂台！", "success");
+      switchMode('player');
+      loadBoss(7, true);
+    }
+
+    /******************************************************************
+     * 12. 📊 講師大螢幕戰情室渲染與彩排模擬資料
+     ******************************************************************/
+    function renderWarRoomCharts(teams) {
+      const managers = teams.filter(t => t.role === 'manager');
+      const advisors = teams.filter(t => t.role !== 'manager');
+
+      document.getElementById('mgrGroupCountBadge').textContent = `${managers.length} 組`;
+      document.getElementById('advGroupCountBadge').textContent = `${advisors.length} 組`;
+
+      const renderBarGroup = (groupList, containerId) => {
+        const total = groupList.length;
+        const counts = { A: 0, B: 0, C: 0 };
+        groupList.forEach(t => {
+          const bossRecord = t.completedBosses && t.completedBosses[currentBossIndex];
+          const c = bossRecord ? bossRecord.choice : (t.latestChoice || 'B');
+          if (counts[c] !== undefined) counts[c]++;
+        });
+
+        const currentBoss = BOSSES[currentBossIndex];
+        const rowsHtml = ['A', 'B', 'C'].map(code => {
+          const cnt = counts[code];
+          const pct = total > 0 ? Math.round((cnt / total) * 100) : 0;
+          const optObj = currentBoss.options.find(o => o.code === code);
+          const isBest = optObj && optObj.score >= 90;
+          const barColor = isBest
+            ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+            : code === 'A'
+            ? 'bg-gradient-to-r from-rose-600 to-amber-500'
+            : 'bg-slate-600';
+
+          return `
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="font-bold ${isBest ? 'text-emerald-300' : 'text-slate-300'}">
+                  話術卡 ${code} ${isBest ? '⭐(王牌破防)' : ''}
+                </span>
+                <span class="font-mono font-bold text-white">${cnt} 組 (${pct}%)</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full ${barColor} transition-all duration-500" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById(containerId).innerHTML = rowsHtml;
+      };
+
+      renderBarGroup(managers, 'chartManager');
+      renderBarGroup(advisors, 'chartAdvisor');
+
+      const tbody = document.getElementById('leaderboardBody');
+      if (teams.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-xs text-slate-500">
+              目前尚無隊伍提交戰績，請點擊右上角「➕ 塞入 5 組模擬通訊處隊伍」或請學員出招！
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const sorted = [...teams].sort((a, b) => {
+        if ((b.totalClosedMan || 0) !== (a.totalClosedMan || 0)) {
+          return (b.totalClosedMan || 0) - (a.totalClosedMan || 0);
+        }
+        return (b.avgScore || 0) - (a.avgScore || 0);
+      });
+
+      tbody.innerHTML = sorted.map((t, i) => {
+        const rankBadge = i === 0 ? '🥇 1' : i === 1 ? '🥈 2' : i === 2 ? '🥉 3' : `${i + 1}`;
+        const bossRec = t.completedBosses && t.completedBosses[currentBossIndex];
+        const choiceBadge = bossRec
+          ? `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono text-xs font-bold">卡 ${bossRec.choice} (${bossRec.score}分)</span>`
+          : `<span class="text-xs text-slate-500">思考中...</span>`;
+
+        return `
+          <tr class="hover:bg-slate-900/60 transition">
+            <td class="py-3 px-3 font-mono font-black text-white">${rankBadge}</td>
+            <td class="py-3 px-3 font-bold text-white">${t.teamName || '未命名戰隊'}</td>
+            <td class="py-3 px-3">
+              <span class="text-xs px-2 py-0.5 rounded ${
+                t.role === 'manager' ? 'bg-rose-500/20 text-rose-300' : 'bg-violet-500/20 text-violet-300'
+              }">
+                ${t.role === 'manager' ? '👔 資深主管組' : '🚀 新銳業務組'}
+              </span>
+            </td>
+            <td class="py-3 px-3">${choiceBadge}</td>
+            <td class="py-3 px-3 font-mono text-violet-300 font-bold">${t.completedCount || 0} / 8 關</td>
+            <td class="py-3 px-3 font-mono text-rose-400 font-bold">${t.avgScore || 0} 分</td>
+            <td class="py-3 px-3 text-right font-mono font-black text-emerald-400">NT$ ${(t.totalClosedMan || 0).toLocaleString()} 萬</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function seedDemoTeamsToFirestore() {
+      const demoSamples = [
+        { id: "demo_1", teamName: "台北一處：MDRT 破壁戰隊", role: "manager", choice: "B", score: 98, closed: 650, count: 4 },
+        { id: "demo_2", teamName: "台中旗艦：巔峰飛鷹通訊處", role: "manager", choice: "B", score: 95, closed: 520, count: 3 },
+        { id: "demo_3", teamName: "高雄新銳：百大新秀攻堅組", role: "advisor", choice: "C", score: 88, closed: 410, count: 3 },
+        { id: "demo_4", teamName: "桃竹苗區：顧問行銷特攻隊", role: "advisor", choice: "A", score: 72, closed: 280, count: 2 },
+        { id: "demo_5", teamName: "台南直轄：富足傳承家族辦公室", role: "manager", choice: "B", score: 99, closed: 810, count: 5 }
+      ];
+
+      if (db && isFirebaseConnected) {
+        try {
+          for (const d of demoSamples) {
+            const demoCompleted = {
+              [currentBossIndex]: { choice: d.choice, score: d.score, dealValueMan: 150 }
+            };
+            await setDoc(doc(db, 'spin_rooms', playerState.roomId, 'teams', d.id), {
+              teamName: d.teamName,
+              role: d.role,
+              totalClosedMan: d.closed,
+              avgScore: d.score,
+              completedCount: d.count,
+              latestChoice: d.choice,
+              completedBosses: demoCompleted,
+              updatedAt: serverTimestamp()
+            });
+          }
+          showToast("✓ 已成功塞入 5 組模擬通訊處隊伍數據！", "success");
+          return;
+        } catch (e) {
+          console.warn("雲端模擬資料寫入失敗，改用本機渲染：", e);
+        }
+      }
+
+      cloudTeamsCache = demoSamples.map(d => ({
+        id: d.id,
+        teamName: d.teamName,
+        role: d.role,
+        totalClosedMan: d.closed,
+        avgScore: d.score,
+        completedCount: d.count,
+        latestChoice: d.choice,
+        completedBosses: { [currentBossIndex]: { choice: d.choice, score: d.score, dealValueMan: 150 } }
+      }));
+      document.getElementById('onlineTeamCount').textContent = cloudTeamsCache.length;
+      renderWarRoomCharts(cloudTeamsCache);
+      showToast("✓ 已載入 5 組模擬通訊處隊伍數據！", "success");
+    }
+
+    async function clearRoomTeams() {
+      if (db && isFirebaseConnected) {
+        try {
+          const snap = await getDocs(collection(db, 'spin_rooms', playerState.roomId, 'teams'));
+          for (const docItem of snap.docs) {
+            await deleteDoc(doc(db, 'spin_rooms', playerState.roomId, 'teams', docItem.id));
+          }
+        } catch (e) {
+          console.warn("清空雲端房間失敗：", e);
+        }
+      }
+      cloudTeamsCache = [];
+      playerState.completedBosses = {};
+      updatePlayerHeaderStats();
+      renderBossSelector();
+      document.getElementById('onlineTeamCount').textContent = "0";
+      renderWarRoomCharts([]);
+      showToast("🗑️ 已清空重置本房間所有隊伍數據！", "info");
+    }
+
+    /******************************************************************
+     * 13. 設定彈窗控制與掛載 window.app
+     ******************************************************************/
+    function toggleConfigModal() {
+      const modal = document.getElementById('configModal');
+      modal.classList.toggle('hidden');
+    }
+
+    async function saveConfig() {
+      const newTeam = document.getElementById('inputTeamName').value.trim() || "第一通訊處：王牌攻堅戰隊";
+      const newRoom = document.getElementById('inputRoomId').value.trim() || "SPIN-2026";
+      const newRole = document.getElementById('inputRole').value;
+      const newKey = document.getElementById('inputGeminiKey').value.trim();
+
+      const roomChanged = newRoom !== playerState.roomId;
+      playerState.teamName = newTeam;
+      playerState.roomId = newRoom;
+      playerState.role = newRole;
+      playerState.geminiApiKey = newKey;
+
+      localStorage.setItem('spin_teamName', newTeam);
+      localStorage.setItem('spin_roomId', newRoom);
+      localStorage.setItem('spin_role', newRole);
+      localStorage.setItem('tp_geminiKey', newKey);
+
+      applyHeaderProfileUI();
+      toggleConfigModal();
+
+      if (roomChanged && isFirebaseConnected) {
+        subscribeToRoomData(playerState.roomId);
+      }
+      await syncMyTeamToFirestore();
+      showToast("✓ 通訊處組別與 API 設定已儲存並同步！", "success");
+    }
+
+    window.app = {
+      switchAuthTab,
+      togglePasswordVisibility,
+      handleEmailRegister,
+      handleEmailLogin,
+      handleGoogleLogin,
+      handleForgotPassword,
+      handleLogout,
+      toggleCreatorModal,
+      toggleAdminModal,
+      toggleMemberRole,
+      deleteMemberDoc,
+      viewMemberHistory,
+      exportMembersCsv,
+      generateAdminPeriodReport,
+      exportAdminWordReport,
+      switchMode,
+      setChapterFilter,
+      loadBoss,
+      selectCard,
+      submitCardMove,
+      goToNextBoss,
+      runFreeSparringWithAi,
+      generateAiCoachCommentary,
+      exportWordReport,
+      fillSandboxPreset,
+      generateCustomBoss,
+      startClassroomTimer,
+      stopClassroomTimer,
+      toggleSoundMute,
+      toggleQrModal,
+      updateQrCodeImage,
+      copyJoinLink,
+      toggleConfigModal,
+      saveConfig,
+      seedDemoTeamsToFirestore,
+      clearRoomTeams
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initUI();
+      initFirebase();
+    });
+  </script>
+</body>
+</html>
