@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="dark">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,15 +20,120 @@
     }
   </script>
   <style>
-    body { background-color: #090714; color: #f8fafc; overflow-x: hidden; }
+    /* ==================== Clean & Bright Modern SaaS Theme ==================== */
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
     .glass-card {
-      background: rgba(20, 18, 40, 0.78);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
     }
     .arena-border {
-      background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(139,92,246,0.14));
-      border: 1px solid rgba(244, 63, 94, 0.35);
+      background: linear-gradient(135deg, #fff1f2 0%, #f5f3ff 100%);
+      border: 1px solid #fecdd3;
+      box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.08);
+    }
+    /* 將原本深色底自動轉為清爽明亮的卡片與輸入框階層 */
+    .bg-\[\#090714\],
+    .bg-slate-950,
+    .bg-slate-950\/95,
+    .bg-slate-950\/90,
+    .bg-slate-950\/80,
+    .bg-slate-950\/60 {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    .bg-slate-900,
+    .bg-slate-900\/95,
+    .bg-slate-900\/90,
+    .bg-slate-900\/80,
+    .bg-slate-900\/60 {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .bg-slate-800 {
+      background-color: #f1f5f9 !important;
+      color: #334155 !important;
+    }
+    .hover\:bg-slate-700:hover {
+      background-color: #e2e8f0 !important;
+    }
+    .text-white {
+      color: #0f172a !important;
+    }
+    /* 保持彩色實心按鈕上的文字為純白 */
+    .bg-rose-600, .bg-emerald-600, .bg-blue-600, .bg-indigo-600,
+    [class*="from-rose-600"], [class*="from-emerald-600"], [class*="from-emerald-500"] {
+      color: #ffffff !important;
+    }
+    .bg-rose-600 *, .bg-emerald-600 *, .bg-blue-600 *,
+    [class*="from-rose-600"] *, [class*="from-emerald-600"] *, [class*="from-emerald-500"] * {
+      color: #ffffff !important;
+    }
+    .text-slate-200, .text-slate-300 {
+      color: #334155 !important;
+    }
+    .text-slate-400, .text-slate-500 {
+      color: #64748b !important;
+    }
+    .text-rose-300, .text-rose-400 {
+      color: #e11d48 !important;
+    }
+    .text-emerald-300, .text-emerald-400 {
+      color: #059669 !important;
+    }
+    .text-violet-300, .text-violet-400 {
+      color: #7c3aed !important;
+    }
+    .text-amber-200, .text-amber-300, .text-amber-400 {
+      color: #d97706 !important;
+    }
+    .border-slate-800, .border-slate-800\/80, .border-slate-800\/90, .border-slate-700, .border-slate-700\/80 {
+      border-color: #e2e8f0 !important;
+    }
+    .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+    .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]),
+    .divide-slate-800\/70 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #e2e8f0 !important;
+    }
+    .bg-emerald-950\/30, .bg-emerald-950\/90, .bg-emerald-950\/95 {
+      background-color: #ecfdf5 !important;
+    }
+    .bg-indigo-950\/40, .bg-violet-950\/20 {
+      background-color: #f5f3ff !important;
+    }
+    .bg-rose-950, .bg-rose-950\/60, .bg-rose-950\/90 {
+      background-color: #fff1f2 !important;
+    }
+    .bg-amber-950\/95 {
+      background-color: #fffbeb !important;
+    }
+    /* 漸進式揭露 (Progressive Disclosure) 手風琴樣式 */
+    details > summary {
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+    details[open] > summary .disclosure-arrow {
+      transform: rotate(180deg);
+    }
+    /* 水平選擇條美化捲軸 */
+    .horizontal-pill-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+    }
+    .horizontal-pill-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    .horizontal-pill-scroll::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
     }
     .pulse-dot {
       animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -39,7 +144,7 @@
     }
     @keyframes urgent-glow {
       0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); border-color: rgba(244, 63, 94, 0.4); }
-      50% { box-shadow: 0 0 35px 4px rgba(244, 63, 94, 0.55); border-color: rgba(244, 63, 94, 1); }
+      50% { box-shadow: 0 0 28px 4px rgba(244, 63, 94, 0.35); border-color: rgba(244, 63, 94, 1); }
     }
     .timer-urgent {
       animation: urgent-glow 0.8s infinite ease-in-out;
@@ -264,108 +369,108 @@
   <!-- ==================== 主程式容器 (通過 Auth Gate 後解鎖顯示) ==================== -->
   <div id="mainAppWrapper" class="hidden min-h-screen flex flex-col justify-between">
 
-  <!-- 頂部導覽列 -->
-  <header class="sticky top-0 z-40 glass-card border-b border-slate-800 px-4 py-3">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="TonyStudio Logo" class="w-11 h-11 rounded-xl object-contain bg-slate-900 p-1 border border-rose-500/40 shadow-lg shadow-rose-500/20" onerror="this.src='https://placehold.co/44x44/1e1b4b/f43f5e?text=TS'">
+  <!-- 頂部導覽列 (Clean & Bright 水平選擇條設計) -->
+  <header class="sticky top-0 z-40 glass-card border-b border-slate-200 px-4 md:px-8 py-3.5 backdrop-blur-md bg-white/90">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="TonyStudio Logo" class="w-11 h-11 rounded-2xl object-contain bg-white p-1 border border-slate-200 shadow-sm" onerror="this.src='https://placehold.co/44x44/f8fafc/e11d48?text=TS'">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">保險業實戰內訓・8大刁鑽魔王攻防戰</span>
-            <span id="firebaseStatusBadge" class="text-xs px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
-              <span id="firebaseStatusDot" class="w-2 h-2 rounded-full bg-amber-400 pulse-dot"></span>
+            <span class="text-xs font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200">保險業實戰內訓・8大刁鑽魔王攻防戰</span>
+            <span id="firebaseStatusBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1.5">
+              <span id="firebaseStatusDot" class="w-2 h-2 rounded-full bg-amber-500 pulse-dot"></span>
               <span id="firebaseStatusText">正在連線至雲端擂台...</span>
             </span>
           </div>
-          <h1 class="text-lg md:text-xl font-black tracking-tight text-white mt-0.5">
+          <h1 class="text-lg md:text-xl font-black tracking-tight text-slate-900 mt-0.5">
             話術破壁者：AI 刁鑽保戶異議處理與 SPIN 實戰擂台
           </h1>
         </div>
       </div>
 
       <!-- 全域頂部倒數計時膠囊 -->
-      <div id="globalTimerBanner" class="hidden items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-rose-500/50 shadow-lg">
-        <span class="text-xs font-bold text-slate-300">⏱️ 拆招決策倒數</span>
-        <span id="globalTimerDigits" class="text-base font-black font-mono text-rose-400">01:00</span>
+      <div id="globalTimerBanner" class="hidden items-center gap-2.5 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200 shadow-sm">
+        <span class="text-xs font-bold text-slate-700">⏱️ 拆招決策倒數</span>
+        <span id="globalTimerDigits" class="text-base font-black font-mono text-rose-600">01:00</span>
       </div>
 
-      <!-- 四大模式切換與控場按鈕 + 管理員後台按鈕 -->
-      <div class="flex flex-wrap items-center gap-2">
-        <button id="adminPortalBtn" onclick="window.app.toggleAdminModal()" class="hidden px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 items-center gap-1.5 transition">
-          <span>👑 進入管理後台</span>
-        </button>
-
-        <button onclick="window.app.toggleCreatorModal()" class="px-3 py-1.5 rounded-xl bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/40 text-xs font-bold flex items-center gap-1.5 transition">
-          <span>👨‍🏫 創作者簡介</span>
-        </button>
-
-        <button onclick="window.app.toggleQrModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition">
-          <span>📱 掃碼進場</span>
-        </button>
-
-        <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-800 flex flex-wrap text-xs md:text-sm font-medium">
-          <button onclick="window.app.switchMode('bible')" id="tab-bible" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+      <!-- 現代化水平選擇條 (Horizontal Pill Bar) + 工具列 -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="bg-slate-100 p-1.5 rounded-2xl border border-slate-200 flex flex-wrap gap-1 text-xs md:text-sm font-bold shadow-inner">
+          <button onclick="window.app.switchMode('bible')" id="tab-bible" class="px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
             📖 異議拆招聖經
           </button>
-          <button onclick="window.app.switchMode('player')" id="tab-player" class="px-3 py-1.5 rounded-lg bg-rose-600 text-white shadow transition">
-            🥊 刁鑽保戶擂台 (8關)
+          <button onclick="window.app.switchMode('player')" id="tab-player" class="px-3.5 py-2 rounded-xl bg-rose-600 text-white shadow-sm transition">
+            🥊 實戰擂台 (8關)
           </button>
-          <button onclick="window.app.switchMode('sandbox')" id="tab-sandbox" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+          <button onclick="window.app.switchMode('sandbox')" id="tab-sandbox" class="px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
             ✨ AI 魔王生成器
           </button>
-          <button onclick="window.app.switchMode('instructor')" id="tab-instructor" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">
+          <button onclick="window.app.switchMode('instructor')" id="tab-instructor" class="px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
             📊 講師戰情室 (<span id="onlineTeamCount">0</span>組)
           </button>
         </div>
 
-        <button onclick="window.app.toggleConfigModal()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="通訊處組別與 API 設定">
+        <button id="adminPortalBtn" onclick="window.app.toggleAdminModal()" class="hidden px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-black text-xs shadow-sm items-center gap-1.5 transition">
+          <span>👑 管理中心</span>
+        </button>
+
+        <button onclick="window.app.toggleCreatorModal()" class="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+          <span>👨‍🏫 顧問簡介</span>
+        </button>
+
+        <button onclick="window.app.toggleQrModal()" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+          <span>📱 掃碼進場</span>
+        </button>
+
+        <button onclick="window.app.toggleConfigModal()" class="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm transition" title="通訊處組別與 API 設定">
           ⚙️
         </button>
 
-        <button onclick="window.app.handleLogout()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-800 text-xs font-bold transition" title="登出系統">
+        <button onclick="window.app.handleLogout()" class="px-3 py-2 rounded-xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 text-xs font-bold shadow-sm transition" title="登出系統">
           🚪 登出
         </button>
       </div>
     </div>
   </header>
 
-  <!-- 主內容區 -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+  <!-- 主內容區 (優化元素間距與留白呼吸感) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 py-8 space-y-8">
 
-    <!-- 學員狀態橫幅 -->
-    <section class="glass-card rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4 border border-slate-800/80">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xl" id="playerAvatar">👔</div>
+    <!-- 學員狀態橫幅 (清爽工作空間資訊列) -->
+    <section class="glass-card rounded-3xl p-5 md:p-6 flex flex-wrap items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-2xl shadow-sm" id="playerAvatar">👔</div>
         <div>
-          <div class="text-xs text-slate-400 flex flex-wrap items-center gap-2">
-            <span id="displayMemberIdentityBadge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">[TONY老師學員]</span>
-            <span id="displayRoleBadge" class="text-rose-400 font-semibold">[資深主管/MDRT組]</span>
-            <span>實戰擂台：<strong id="displayRoomId" class="text-white font-mono">SPIN-2026</strong></span>
-            <span id="displayUidBadge" class="text-[11px] text-slate-500 font-mono"></span>
+          <div class="text-xs text-slate-500 flex flex-wrap items-center gap-2">
+            <span id="displayMemberIdentityBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">[TONY老師學員]</span>
+            <span id="displayRoleBadge" class="text-rose-600 font-semibold">[資深主管/MDRT組]</span>
+            <span>房號：<strong id="displayRoomId" class="text-slate-900 font-mono">SPIN-2026</strong></span>
+            <span id="displayUidBadge" class="text-[11px] text-slate-400 font-mono"></span>
           </div>
-          <div class="font-bold text-base md:text-lg text-white flex flex-wrap items-center gap-2 mt-0.5">
+          <div class="font-black text-base md:text-lg text-slate-900 flex flex-wrap items-center gap-2.5 mt-1">
             <span id="displayTeamName">第一通訊處：王牌攻堅戰隊</span>
-            <span id="displayMemberEmailBadge" class="text-xs text-slate-400 font-mono font-normal"></span>
-            <button onclick="window.app.toggleConfigModal()" class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 font-normal transition">✏️ 修改單位/職級</button>
+            <span id="displayMemberEmailBadge" class="text-xs text-slate-500 font-mono font-normal"></span>
+            <button onclick="window.app.toggleConfigModal()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold transition">✏️ 修改單位</button>
           </div>
         </div>
       </div>
 
       <!-- 累積攻堅指標 -->
-      <div class="flex items-center gap-4 md:gap-8 bg-slate-900/80 px-4 py-2.5 rounded-xl border border-slate-800">
+      <div class="flex items-center gap-6 md:gap-8 bg-slate-50 px-6 py-3.5 rounded-2xl border border-slate-200">
         <div>
-          <div class="text-xs text-slate-400">累積攻克保單總價值 (FYC/保額)</div>
-          <div class="text-lg md:text-xl font-black text-emerald-400 font-mono" id="statTotalClosed">NT$ 0 萬</div>
+          <div class="text-xs font-medium text-slate-500">累積攻克保單總價值</div>
+          <div class="text-lg md:text-xl font-black text-emerald-600 font-mono mt-0.5" id="statTotalClosed">NT$ 0 萬</div>
         </div>
-        <div class="h-8 w-px bg-slate-800"></div>
+        <div class="h-8 w-px bg-slate-200"></div>
         <div>
-          <div class="text-xs text-slate-400">平均話術破防指數</div>
-          <div class="text-lg md:text-xl font-black text-rose-400 font-mono" id="statAvgTrust">-- 分</div>
+          <div class="text-xs font-medium text-slate-500">平均話術破防指數</div>
+          <div class="text-lg md:text-xl font-black text-rose-600 font-mono mt-0.5" id="statAvgTrust">-- 分</div>
         </div>
-        <div class="h-8 w-px bg-slate-800"></div>
+        <div class="h-8 w-px bg-slate-200"></div>
         <div>
-          <div class="text-xs text-slate-400">已收服刁鑽保戶</div>
-          <div class="text-lg md:text-xl font-black text-violet-400 font-mono"><span id="statDefeatedBosses">0</span> / 8</div>
+          <div class="text-xs font-medium text-slate-500">已收服刁鑽保戶</div>
+          <div class="text-lg md:text-xl font-black text-violet-600 font-mono mt-0.5"><span id="statDefeatedBosses">0</span> / 8</div>
         </div>
       </div>
     </section>
@@ -528,247 +633,251 @@
     </div>
 
     <!-- ==================== 視角 1：🥊 刁鑽保戶異議處理實戰擂台 (8大魔王) ==================== -->
-    <div id="view-player" class="space-y-5">
+    <div id="view-player" class="space-y-8">
 
-      <!-- 題庫章節篩選器 -->
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
-          <span class="text-slate-400">📚 選擇刁鑽魔王章節：</span>
-          <button onclick="window.app.setChapterFilter('ch1')" id="chap-ch1" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition">
-            第一章：四大經典拒絕魔王 (Boss 1~4)
-          </button>
-          <button onclick="window.app.setChapterFilter('ch2')" id="chap-ch2" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition">
-            第二章：進階心魔與信任危機 (Boss 5~8 ⭐新擴充)
-          </button>
-          <button onclick="window.app.setChapterFilter('all')" id="chap-all" class="px-3 py-1.5 rounded-xl bg-rose-600 text-white shadow border border-rose-500 transition">
-            🔥 完整 8 大魔王全開
-          </button>
+      <!-- 水平選擇條 (Horizontal Selection Bar)：章節切換與橫向滑動魔王選擇器 -->
+      <div class="glass-card rounded-3xl p-5 md:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+            <span class="text-slate-500 mr-1">📚 關卡章節篩選：</span>
+            <button onclick="window.app.setChapterFilter('all')" id="chap-all" class="px-4 py-2 rounded-full bg-rose-600 text-white shadow-sm border border-rose-600 transition">
+              🔥 完整 8 大魔王全開
+            </button>
+            <button onclick="window.app.setChapterFilter('ch1')" id="chap-ch1" class="px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">
+              第一章：經典拒絕 (Boss 1~4)
+            </button>
+            <button onclick="window.app.setChapterFilter('ch2')" id="chap-ch2" class="px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">
+              第二章：進階心魔 (Boss 5~8)
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="window.app.switchMode('bible')" class="text-xs px-3.5 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold transition">
+              📖 查閱《SPIN 拆招聖經》
+            </button>
+            <button onclick="window.app.switchMode('sandbox')" class="text-xs px-3.5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold transition">
+              ✨ 自訂新魔王
+            </button>
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="window.app.switchMode('bible')" class="text-xs px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold transition">
-            📖 先看《SPIN 拆招理論聖經》
-          </button>
-          <button onclick="window.app.switchMode('sandbox')" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold transition">
-            ✨ 把你遇到的難搞客戶建成新魔王
-          </button>
-        </div>
+
+        <!-- 水平捲動魔王選擇條 (Horizontal Boss Pill Bar) -->
+        <div class="flex items-stretch gap-3.5 overflow-x-auto pb-2 pt-1 horizontal-pill-scroll" id="bossSelectorContainer"></div>
       </div>
 
-      <!-- 8 大魔王選擇器 -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="bossSelectorContainer"></div>
+      <!-- 擂台工作空間卡片 (Workspace Cards)：左客戶情境、右回應決策 (拉開間距 gap-8) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      <!-- 擂台主體：左刁鑽保戶狀態與拒絕潛台詞、右話術卡牌與 AI 自由對話攻防 -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- 左側：刁鑽保戶魔王卡片、雙血條與 3 大心理訊號 (佔 5 欄) -->
-        <div class="lg:col-span-5 space-y-4">
-          <div id="bossProfileCard" class="arena-border rounded-2xl p-5 space-y-4 transition-all">
-            <div class="flex items-center justify-between">
-              <span id="bossTag" class="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+        <!-- 左側工作空間：刁鑽保戶魔王卡片、雙血條與漸進式揭露心理訊號 (佔 5 欄) -->
+        <div class="lg:col-span-5 space-y-6">
+          <div id="bossProfileCard" class="arena-border rounded-3xl p-6 md:p-7 space-y-5 transition-all">
+            <div class="flex items-center justify-between gap-2">
+              <span id="bossTag" class="text-xs font-bold px-3 py-1 rounded-full bg-white text-rose-600 border border-rose-200 shadow-sm">
                 Boss 1・保單買很多型
               </span>
-              <span id="bossDealValueBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-900 text-emerald-400 border border-slate-700">
+              <span id="bossDealValueBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                 潛在簽單價值：NT$ 120 萬保障
               </span>
             </div>
 
-            <!-- 魔王頭像與當面拒絕台詞對話框 -->
-            <div class="flex items-start gap-3.5">
-              <div id="bossAvatarBox" class="w-16 h-16 rounded-2xl bg-slate-900 border-2 border-rose-500/50 flex items-center justify-center text-4xl shrink-0 shadow-lg">
+            <!-- 魔王頭像與背景簡介 -->
+            <div class="flex items-start gap-4">
+              <div id="bossAvatarBox" class="w-16 h-16 rounded-2xl bg-white border-2 border-rose-300 flex items-center justify-center text-4xl shrink-0 shadow-sm">
                 😤
               </div>
               <div>
-                <h2 id="bossTitle" class="text-lg md:text-xl font-black text-white">38歲 鐵齒科技業副理 陳先生</h2>
-                <p id="bossBgDesc" class="text-xs text-slate-300 mt-0.5 leading-relaxed"></p>
+                <h2 id="bossTitle" class="text-lg md:text-xl font-black text-slate-900">38歲 鐵齒科技業副理 陳先生</h2>
+                <p id="bossBgDesc" class="text-xs md:text-sm text-slate-600 mt-1 leading-relaxed"></p>
               </div>
             </div>
 
             <!-- 刁鑽拒絕台詞大氣泡 -->
-            <div class="p-4 rounded-2xl bg-slate-950/90 border-l-4 border-l-rose-500 relative">
-              <div class="text-[11px] font-bold text-rose-400 uppercase tracking-wider mb-1">💬 客戶當面拋出的刁鑽異議：</div>
-              <p id="bossObjectionQuote" class="text-sm md:text-base font-black text-white leading-snug"></p>
+            <div class="p-5 rounded-2xl bg-white border-l-4 border-l-rose-500 shadow-sm">
+              <div class="text-xs font-bold text-rose-600 uppercase tracking-wider mb-1.5">💬 客戶當面拋出的刁鑽異議：</div>
+              <p id="bossObjectionQuote" class="text-base md:text-lg font-black text-slate-900 leading-snug"></p>
             </div>
 
             <!-- 視覺化雙血條：防備心 HP 與 信任簽單度 -->
-            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-3">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3.5 shadow-sm">
               <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span class="font-bold text-rose-400 flex items-center gap-1">🛡️ 客戶防備心血條 (Defense HP)</span>
-                  <span id="labelDefenseHp" class="font-mono font-black text-rose-400">85% (戒備極高)</span>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="font-bold text-rose-600 flex items-center gap-1">🛡️ 客戶防備心血條 (Defense HP)</span>
+                  <span id="labelDefenseHp" class="font-mono font-black text-rose-600">85% (戒備極高)</span>
                 </div>
-                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5">
-                  <div id="barDefenseHp" class="h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full transition-all duration-700" style="width: 85%"></div>
+                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5">
+                  <div id="barDefenseHp" class="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full transition-all duration-700" style="width: 85%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-xs mb-1">
-                  <span class="font-bold text-emerald-400 flex items-center gap-1">❤️ 顧問信任與簽單意願 (Trust Meter)</span>
-                  <span id="labelTrustMeter" class="font-mono font-black text-emerald-400">20% (尚未破防)</span>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="font-bold text-emerald-600 flex items-center gap-1">❤️ 顧問信任與簽單意願 (Trust Meter)</span>
+                  <span id="labelTrustMeter" class="font-mono font-black text-emerald-600">20% (尚未破防)</span>
                 </div>
-                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5">
-                  <div id="barTrustMeter" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full transition-all duration-700" style="width: 20%"></div>
+                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5">
+                  <div id="barTrustMeter" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-700" style="width: 20%"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 客戶背後三大隱藏心理訊號卡 -->
-          <div class="glass-card rounded-2xl p-5 space-y-3">
-            <div class="flex items-center justify-between">
-              <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                <span>📡 Step 1：解碼客戶話語背後的 3 大隱藏訊號</span>
-              </h3>
-              <span class="text-xs text-rose-400">拆招前先看穿潛台詞</span>
-            </div>
-            <div id="signalsContainer" class="space-y-3"></div>
-          </div>
+          <!-- 漸進式揭露 (Progressive Disclosure)：點擊展開客戶背後 3 大隱藏心理訊號 -->
+          <details class="glass-card rounded-3xl group overflow-hidden" open>
+            <summary class="p-5 md:px-6 cursor-pointer flex items-center justify-between hover:bg-slate-50 transition select-none">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-base font-bold">📡</span>
+                <div>
+                  <h3 class="text-sm font-black text-slate-900">Step 1：解碼客戶話語背後的 3 大隱藏訊號</h3>
+                  <p class="text-xs text-slate-500">點擊展開/收合客戶沒說出口的真實恐懼（Progressive Disclosure）</p>
+                </div>
+              </div>
+              <span class="disclosure-arrow text-slate-400 transition-transform duration-200 text-sm">▼</span>
+            </summary>
+            <div id="signalsContainer" class="px-6 pb-6 pt-2 space-y-3 border-t border-slate-100"></div>
+          </details>
         </div>
 
-        <!-- 右側：Step 2 話術卡牌三選一 ＆ AI 真人自由對話攻防 ＆ 深度拆招報告 (佔 7 欄) -->
+        <!-- 右側工作空間：Step 2 話術卡牌三選一 ＆ 漸進式揭露自由對打 ＆ 深度拆招報告 (佔 7 欄) -->
         <div class="lg:col-span-7 space-y-6">
 
-          <!-- 卡牌對決與自由輸入面板 -->
-          <div id="playerDecisionCard" class="glass-card rounded-2xl p-5 md:p-6 space-y-5 transition-all">
-            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+          <!-- 卡牌對決主工作區 -->
+          <div id="playerDecisionCard" class="glass-card rounded-3xl p-6 md:p-8 space-y-6 transition-all">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
               <div>
-                <h3 class="text-base md:text-lg font-bold text-white">🃏 Step 2：選擇您的黃金回應話術卡（或於下方直接打字過招）</h3>
-                <p class="text-xs text-slate-400">選對「LSCPA 同理 ＋ SPIN 提問」即可一舉擊穿客戶防備心血條！</p>
+                <h3 class="text-lg md:text-xl font-black text-slate-900">🃏 Step 2：選擇您的黃金回應話術卡</h3>
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">選對「LSCPA 同理 ＋ SPIN 提問」即可一舉擊穿客戶防備心血條！</p>
               </div>
-              <span class="text-xs px-2.5 py-1 rounded-lg bg-violet-500/20 text-violet-300 border border-violet-500/30 font-semibold">
+              <span class="text-xs px-3 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 font-bold">
                 點選 A / B / C 任一話術卡出招
               </span>
             </div>
 
-            <!-- A / B / C 三張話術策略卡 -->
-            <div id="responseCardsContainer" class="space-y-3.5"></div>
+            <!-- A / B / C 三張話術策略卡 (增加卡片間距 space-y-4) -->
+            <div id="responseCardsContainer" class="space-y-4"></div>
 
             <!-- 出招鎖定按鈕 -->
-            <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
-              <div class="text-xs text-slate-300">
-                已選擇出招策略：<strong id="selectedCardBadge" class="text-rose-400 font-mono text-sm">請先點選上方 A / B / C 話術卡</strong>
+            <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+              <div class="text-xs md:text-sm text-slate-600">
+                已鎖定出招策略：<strong id="selectedCardBadge" class="text-rose-600 font-mono text-sm">策略卡 B</strong>
               </div>
-              <button id="submitMoveBtn" onclick="window.app.submitCardMove()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-violet-600 hover:from-rose-500 hover:to-violet-500 text-white font-black shadow-lg shadow-rose-600/30 transition flex items-center gap-2">
+              <button id="submitMoveBtn" onclick="window.app.submitCardMove()" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-violet-600 hover:from-rose-500 hover:to-violet-500 text-white font-black text-sm shadow-lg shadow-rose-500/25 transition flex items-center gap-2">
                 <span>⚡ 發動話術拆招・觀看客戶反應與診斷報告</span>
               </button>
             </div>
 
-            <!-- 進階亮點：🎙️ 業務員自由輸入話術 vs. Gemini 刁鑽客戶即時回嘴擂台 -->
-            <div class="mt-4 pt-4 border-t border-slate-800/90 space-y-3">
-              <div class="flex items-center justify-between">
-                <label class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                  <span>🎙️ 【實戰自由過招區】想試試自己平常說的話？直接打字跟這位 AI 刁鑽保戶過招：</span>
-                </label>
-                <span class="text-[11px] text-slate-400 font-mono">Gemini AI Role-Play</span>
+            <!-- 漸進式揭露：🎙️ 業務員自由輸入話術 vs. Gemini 刁鑽客戶即時回嘴擂台 -->
+            <details class="rounded-2xl bg-amber-50/60 border border-amber-200 overflow-hidden">
+              <summary class="px-5 py-3.5 cursor-pointer flex items-center justify-between hover:bg-amber-50 transition select-none">
+                <span class="text-xs md:text-sm font-bold text-amber-900 flex items-center gap-2">
+                  <span>🎙️ 【進階自由過招區】想測試自己平常講的話？點此展開與 AI 刁鑽保戶直接對話</span>
+                </span>
+                <span class="disclosure-arrow text-amber-700 transition-transform duration-200 text-xs">▼ 展開</span>
+              </summary>
+              <div class="p-5 pt-3 border-t border-amber-200/70 space-y-3 bg-white">
+                <div class="flex flex-col sm:flex-row gap-2.5">
+                  <input id="customPitchInput" type="text" placeholder="輸入您想對這位客戶說的話（例：陳大哥，買ETF很好，但如果遇到股災生病...）" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs md:text-sm text-slate-900 focus:border-rose-500 focus:outline-none">
+                  <button id="btnFreeSparring" onclick="window.app.runFreeSparringWithAi()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 shadow-sm transition">
+                    🥊 發送話術過招
+                  </button>
+                </div>
+                <div id="freeSparringResultBox" class="hidden p-4 rounded-xl bg-slate-50 border border-amber-300 space-y-2 text-xs"></div>
               </div>
-              <div class="flex flex-col sm:flex-row gap-2">
-                <input id="customPitchInput" type="text" placeholder="輸入您想對這位客戶說的話（例：陳大哥，買ETF很好，但如果遇到股災生病...）" class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs md:text-sm text-white focus:border-rose-500 focus:outline-none">
-                <button id="btnFreeSparring" onclick="window.app.runFreeSparringWithAi()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 shadow transition">
-                  🥊 發送話術與 AI 過招
-                </button>
-              </div>
-              <!-- AI 自由過招即時對話氣泡結果 -->
-              <div id="freeSparringResultBox" class="hidden p-4 rounded-xl bg-slate-950 border border-amber-500/40 space-y-2 text-xs"></div>
-            </div>
+            </details>
           </div>
 
-          <!-- ==================== 開獎結果：客戶第一時間反應 ＋ 為什麼有效/踩雷深度解析 ＋ SPIN 4步劇本 ＋ Word 匯出 ==================== -->
-          <div id="resultPanel" class="hidden glass-card rounded-2xl p-5 md:p-6 border-2 border-rose-500/50 space-y-6">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
-              <div class="flex items-center gap-2.5">
+          <!-- ==================== 開獎結果：採用漸進式揭露呈現診斷細節 ==================== -->
+          <div id="resultPanel" class="hidden glass-card rounded-3xl p-6 md:p-8 border-2 border-rose-300 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+              <div class="flex items-center gap-3">
                 <span class="text-3xl">🏆</span>
                 <div>
-                  <h3 class="text-lg md:text-xl font-black text-white">過招結果揭曉 ＆ SPIN 顧問話術深度診斷書</h3>
-                  <p class="text-xs text-slate-400">解析每句話對客戶「防備心」與「信任度」的心理學蝴蝶效應</p>
+                  <h3 class="text-lg md:text-xl font-black text-slate-900">過招結果揭曉 ＆ SPIN 顧問話術診斷書</h3>
+                  <p class="text-xs text-slate-500">核心結果一目了然，深度解析可點擊下方摺疊面板逐一展開</p>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <div id="resultGradeBadge" class="px-3 py-1.5 rounded-xl font-black text-xs md:text-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                <div id="resultGradeBadge" class="px-3.5 py-1.5 rounded-full font-black text-xs md:text-sm bg-emerald-50 text-emerald-700 border border-emerald-200">
                   S 級・話術破壁大師
                 </div>
-                <button onclick="window.app.exportWordReport()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/30 flex items-center gap-1.5 transition">
-                  <span>📥 下載本關 SPIN 話術秘笈 (.doc)</span>
+                <button onclick="window.app.exportWordReport()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+                  <span>📥 下載 Word 秘笈 (.doc)</span>
                 </button>
               </div>
             </div>
 
             <!-- 客戶聽完後的即時表情與回應大氣泡 -->
-            <div id="clientReactionBanner" class="p-4 rounded-2xl bg-slate-900 border border-slate-700 space-y-2">
+            <div id="clientReactionBanner" class="p-5 rounded-2xl bg-rose-50/60 border border-rose-200 space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-amber-300">📣 客戶聽完您這句話後的第一時間真實反應：</span>
-                <span id="resImpactStats" class="text-xs font-mono font-bold text-emerald-400">防備心 -70% ｜ 信任度 +75%</span>
+                <span class="text-xs font-bold text-rose-700">📣 客戶聽完您這句話後的第一時間真實反應：</span>
+                <span id="resImpactStats" class="text-xs font-mono font-bold text-emerald-700">防備心 -70% ｜ 信任度 +75%</span>
               </div>
-              <p id="resClientReplyText" class="text-sm md:text-base font-bold text-white leading-relaxed"></p>
+              <p id="resClientReplyText" class="text-sm md:text-base font-bold text-slate-900 leading-relaxed"></p>
             </div>
 
             <!-- 四大攻堅指標卡 -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-                <div class="text-xs text-slate-400">客戶剩餘防備心</div>
-                <div id="resFinalDefense" class="text-lg font-black text-rose-400 font-mono mt-1">15% (已卸下)</div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div class="text-xs text-slate-500">客戶剩餘防備心</div>
+                <div id="resFinalDefense" class="text-lg font-black text-rose-600 font-mono mt-1">15%</div>
               </div>
-              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-                <div class="text-xs text-slate-400">最終簽單信任度</div>
-                <div id="resFinalTrust" class="text-lg font-black text-emerald-400 font-mono mt-1">95%</div>
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div class="text-xs text-slate-500">最終簽單信任度</div>
+                <div id="resFinalTrust" class="text-lg font-black text-emerald-600 font-mono mt-1">95%</div>
               </div>
-              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-                <div class="text-xs text-slate-400">成功守護保額價值</div>
-                <div id="resDealValue" class="text-lg font-black text-amber-400 font-mono mt-1">NT$ 120萬</div>
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div class="text-xs text-slate-500">成功守護保額價值</div>
+                <div id="resDealValue" class="text-lg font-black text-amber-600 font-mono mt-1">NT$ 120萬</div>
               </div>
-              <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-                <div class="text-xs text-slate-400">話術破防綜合得分</div>
-                <div id="resScore" class="text-lg font-black text-white font-mono mt-1">98 分</div>
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div class="text-xs text-slate-500">話術破防綜合得分</div>
+                <div id="resScore" class="text-lg font-black text-slate-900 font-mono mt-1">98 分</div>
               </div>
             </div>
 
-            <!-- 壹、A / B / C 三張話術卡「為什麼有效 vs. 為什麼踩雷」逐項心理學解析 -->
-            <div class="bg-slate-900/95 rounded-2xl p-5 border border-slate-800 space-y-4">
-              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                <h4 class="text-sm font-black text-rose-300">
-                  🔍 壹、為什麼這句話能破防（或踩雷）？（A / B / C 三種回應心理學完整拆解）
-                </h4>
-                <span class="text-xs text-slate-400">看懂話術背後的差距</span>
-              </div>
-              <div id="threeCardsAnalysisContainer" class="space-y-3 text-xs"></div>
-            </div>
+            <!-- 貳、本關標準「LSCPA + SPIN 顧問四步成交劇本 (Playbook)」(預設展開) -->
+            <details class="rounded-2xl bg-emerald-50/50 border border-emerald-200 overflow-hidden" open>
+              <summary class="px-5 py-4 cursor-pointer flex items-center justify-between hover:bg-emerald-50 transition select-none">
+                <span class="text-sm font-black text-emerald-800">🎯 實戰必背：本關標準「LSCPA ＋ SPIN 四步成交話術劇本」</span>
+                <span class="disclosure-arrow text-emerald-700 transition-transform duration-200 text-xs">▼</span>
+              </summary>
+              <div id="spinPlaybookContainer" class="p-5 pt-3 border-t border-emerald-200/60 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-white"></div>
+            </details>
 
-            <!-- 貳、本關標準「LSCPA + SPIN 顧問四步成交劇本 (Playbook)」 -->
-            <div class="bg-emerald-950/30 rounded-2xl p-5 border border-emerald-500/30 space-y-4">
-              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-500/20 pb-2.5">
-                <h4 class="text-sm font-black text-emerald-300">
-                  🎯 貳、背起來明天直接用：本關標準「LSCPA ＋ SPIN 四步成交話術劇本」
-                </h4>
-                <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">實戰成交標準作業程序</span>
-              </div>
-              <div id="spinPlaybookContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs"></div>
-            </div>
+            <!-- 壹、A / B / C 三張話術卡「為什麼有效 vs. 為什麼踩雷」逐項心理學解析 (漸進式揭露) -->
+            <details class="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden">
+              <summary class="px-5 py-4 cursor-pointer flex items-center justify-between hover:bg-slate-100 transition select-none">
+                <span class="text-sm font-black text-slate-800">🔍 深度拆解：A / B / C 三種回應話術之心理學完整比較（點此展開）</span>
+                <span class="disclosure-arrow text-slate-500 transition-transform duration-200 text-xs">▼</span>
+              </summary>
+              <div id="threeCardsAnalysisContainer" class="p-5 pt-3 border-t border-slate-200 space-y-3 text-xs bg-white"></div>
+            </details>
 
-            <!-- 參、AI 首席銷售教練深度講評與進階追問腳本 -->
-            <div class="bg-indigo-950/40 rounded-2xl p-5 border border-indigo-500/40 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <h4 class="text-sm font-black text-white">
-                    🤖 參、AI 首席銷售教練深度講評 ＆ 下一句追問腳本 (Gemini Flash)
-                  </h4>
-                  <p class="text-xs text-slate-400">由 AI 教練針對本關客戶心理，生成「當客戶點頭後的下一句促成追問」並納入 Word 報告</p>
+            <!-- 參、AI 首席銷售教練深度講評與進階追問腳本 (漸進式揭露) -->
+            <details class="rounded-2xl bg-indigo-50/50 border border-indigo-200 overflow-hidden">
+              <summary class="px-5 py-4 cursor-pointer flex items-center justify-between hover:bg-indigo-50 transition select-none">
+                <span class="text-sm font-black text-indigo-900">🤖 AI 首席銷售教練深度講評 ＆ 下一句追問腳本（點此展開）</span>
+                <span class="disclosure-arrow text-indigo-700 transition-transform duration-200 text-xs">▼</span>
+              </summary>
+              <div class="p-5 pt-3 border-t border-indigo-200/60 space-y-3 bg-white">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <p class="text-xs text-slate-500">由 AI 教練針對本關客戶心理，生成「當客戶點頭後的下一句促成追問」</p>
+                  <button id="btnGenerateAiReport" onclick="window.app.generateAiCoachCommentary()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-sm transition">
+                    ✨ 請 AI 教練生成進階追問劇本
+                  </button>
                 </div>
-                <button id="btnGenerateAiReport" onclick="window.app.generateAiCoachCommentary()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow transition">
-                  ✨ 請 AI 教練生成進階追問與成交劇本
-                </button>
+                <div id="aiDeepCommentaryBox" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs md:text-sm text-slate-700 leading-relaxed whitespace-pre-line"></div>
               </div>
-              <div id="aiDeepCommentaryBox" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-xs md:text-sm text-slate-200 leading-relaxed whitespace-pre-line"></div>
-            </div>
+            </details>
 
             <!-- 底部操作列 -->
-            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
-              <div class="text-xs text-slate-300">
-                💡 <strong>隨身武功秘笈：</strong>點擊右側藍色按鈕即可下載編排精美的《異議處理與 SPIN 實戰話術秘笈 (.doc)》！
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+              <div class="text-xs text-slate-600">
+                💡 <strong>隨身武功秘笈：</strong>點擊右側按鈕即可下載排版精美的《SPIN 實戰話術秘笈 (.doc)》！
               </div>
               <div class="flex items-center gap-2.5">
-                <button onclick="window.app.exportWordReport()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/30 transition">
-                  📄 匯出排版 Word 話術秘笈 (.doc)
+                <button onclick="window.app.exportWordReport()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition">
+                  📄 匯出 Word 話術秘笈 (.doc)
                 </button>
-                <button onclick="window.app.goToNextBoss()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black shadow transition">
+                <button onclick="window.app.goToNextBoss()" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black shadow-sm transition">
                   挑戰下一位刁鑽魔王 ➔
                 </button>
               </div>
@@ -2868,19 +2977,19 @@
         const isDone = playerState.completedBosses[idx] !== undefined;
         const isExpansion = idx >= 4;
         return `
-          <button onclick="window.app.loadBoss(${idx})" class="text-left p-3.5 rounded-2xl border transition flex flex-col justify-between ${
+          <button onclick="window.app.loadBoss(${idx})" class="shrink-0 w-60 text-left p-4 rounded-2xl border transition-all flex flex-col justify-between ${
             isActive
-              ? 'bg-rose-500/20 border-rose-500 shadow-lg shadow-rose-500/10'
-              : 'glass-card border-slate-800 hover:border-slate-700'
+              ? 'bg-rose-50 border-2 border-rose-500 shadow-md'
+              : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
           }">
-            <div class="flex items-center justify-between w-full mb-1">
-              <span class="text-xs font-bold ${isActive ? 'text-rose-300' : 'text-slate-400'}">
-                ${b.tag.split('・')[0]} ${isExpansion ? '<span class="text-[10px] text-violet-300 ml-0.5">★進階</span>' : ''}
+            <div class="flex items-center justify-between w-full mb-1.5">
+              <span class="text-xs font-bold ${isActive ? 'text-rose-600' : 'text-slate-500'}">
+                ${b.tag.split('・')[0]} ${isExpansion ? '<span class="text-[10px] text-violet-600 ml-0.5">★進階</span>' : ''}
               </span>
-              ${isDone ? '<span class="text-xs px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">✓ 已破防</span>' : ''}
+              ${isDone ? '<span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">✓ 已破防</span>' : ''}
             </div>
-            <div class="font-bold text-sm text-white truncate">${b.avatar} ${b.name}</div>
-            <div class="text-xs text-slate-400 truncate mt-0.5">${b.objectionQuote}</div>
+            <div class="font-black text-sm text-slate-900 truncate">${b.avatar} ${b.name}</div>
+            <div class="text-xs text-slate-500 truncate mt-1">${b.objectionQuote}</div>
           </button>
         `;
       }).join('');
